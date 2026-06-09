@@ -1,0 +1,4 @@
+split,yaml_key,yaml_value,resolved_path,resolved_exists,expected_exists,expected_path
+train,train,../train/images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\train\images,False,True,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\train\images
+valid,val,../valid/images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\valid\images,False,True,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\valid\images
+test,test,../test/images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\test\images,False,True,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\test\images

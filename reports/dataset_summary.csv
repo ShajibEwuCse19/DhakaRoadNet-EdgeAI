@@ -1,0 +1,4 @@
+split,images,label_files,background_images,empty_label_files,images_without_label_file,labels_without_image_file,annotation_boxes,boxes_per_image,median_bbox_area_norm,image_split_percent
+train,1754,1754,3,3,0,0,19164,10.926,0.0026977539062499997,81.77
+valid,195,195,0,0,0,0,2013,10.323,0.0028369140625000002,9.09
+test,196,196,0,0,0,0,2271,11.587,0.0028326416015625,9.14
