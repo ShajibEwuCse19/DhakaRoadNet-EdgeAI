@@ -1,0 +1,25 @@
+class_id,class_name,train,valid,test,total
+6,Human,7480,744,855,9079
+2,Bus,2535,289,314,3138
+16,Rickshaw,2300,252,299,2851
+3,Car,1438,164,173,1775
+20,Three wheelers -CNG-,1467,141,152,1760
+12,Motorbike,949,85,122,1156
+15,Pothole,747,85,111,943
+18,SUV,334,29,38,401
+11,Minivan,329,22,39,390
+23,Zebra Crossing,236,31,27,294
+0,Auto rickshaw,212,22,15,249
+1,Bicycle,183,29,17,229
+21,Truck,156,24,25,205
+22,Van,137,19,25,181
+5,Garbage van,116,21,10,147
+17,Road barrier,117,14,7,138
+19,Speed Breaker,114,9,13,136
+9,Micro Bus,101,12,11,124
+4,Dog,63,5,7,75
+10,Mini truck,66,5,2,73
+8,Manhole,36,5,4,45
+13,Pickup truck,24,4,2,30
+7,Leguna,24,1,2,27
+14,Police car,0,1,1,2
