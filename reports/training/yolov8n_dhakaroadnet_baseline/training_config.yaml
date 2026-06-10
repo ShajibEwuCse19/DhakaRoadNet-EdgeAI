@@ -1,4 +1,4 @@
-created_at: '2026-06-10T11:28:41'
+created_at: '2026-06-10T12:08:14'
 experiment_name: yolov8n_dhakaroadnet_baseline
 model_choice: yolov8n.pt
 secondary_model_to_compare_later: yolov8s.pt
