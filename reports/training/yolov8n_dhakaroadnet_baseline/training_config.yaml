@@ -1,0 +1,73 @@
+created_at: '2026-06-10T11:28:41'
+experiment_name: yolov8n_dhakaroadnet_baseline
+model_choice: yolov8n.pt
+secondary_model_to_compare_later: yolov8s.pt
+dataset_yaml: C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\data_yolov8.yaml
+class_count: 24
+class_names:
+- Auto rickshaw
+- Bicycle
+- Bus
+- Car
+- Dog
+- Garbage van
+- Human
+- Leguna
+- Manhole
+- Micro Bus
+- Mini truck
+- Minivan
+- Motorbike
+- Pickup truck
+- Police car
+- Pothole
+- Rickshaw
+- Road barrier
+- SUV
+- Speed Breaker
+- Three wheelers -CNG-
+- Truck
+- Van
+- Zebra Crossing
+training_config:
+  model: yolov8n.pt
+  data: C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\data_yolov8.yaml
+  epochs: 120
+  patience: 25
+  batch: 16
+  imgsz: 640
+  optimizer: AdamW
+  lr0: 0.001
+  lrf: 0.01
+  momentum: 0.937
+  weight_decay: 0.0005
+  warmup_epochs: 3.0
+  cos_lr: true
+  device: 0
+  workers: 0
+  seed: 42
+  deterministic: true
+  save: true
+  save_period: 10
+  project: C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs
+  name: yolov8n_dhakaroadnet_baseline
+  exist_ok: false
+  plots: true
+  val: true
+  amp: true
+  cache: false
+augmentation_config:
+  fliplr: 0.5
+  flipud: 0.0
+  degrees: 5.0
+  translate: 0.1
+  scale: 0.4
+  shear: 2.0
+  perspective: 0.0005
+  hsv_h: 0.015
+  hsv_s: 0.6
+  hsv_v: 0.4
+  mosaic: 0.8
+  mixup: 0.05
+  copy_paste: 0.0
+  close_mosaic: 15

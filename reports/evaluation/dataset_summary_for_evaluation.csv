@@ -1,0 +1,4 @@
+split,images,labels,empty_labels,boxes,boxes_per_image
+train,1754,1754,3,19164,10.926
+valid,195,195,0,2013,10.323
+test,196,196,0,2271,11.587
