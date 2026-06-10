@@ -126,6 +126,7 @@ cython_debug/
 # OS-specific files
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Private / Configuration
 .env
@@ -135,4 +136,35 @@ Thumbs.db
 runs/
 data/roboflow/
 data/raw/
-model/checkpoints/
+*.cache
+labels.cache
+
+# Keep source notebooks, reports, and the selected final model.
+# Ignore generated YOLO demo/training folders and temporary notebook artifacts.
+notebooks/.gradio/
+notebooks/runs/
+notebooks/datasets/
+notebooks/yolo*.pt
+notebooks/*.tmp
+notebooks/*.bak
+
+# Keep reports by default, but ignore local Gradio test uploads/predictions.
+reports/gradio_tests/
+
+# Training outputs can be regenerated from the notebook.
+model/runs/
+
+# Keep only the final best checkpoint in Git; ignore intermediate checkpoints.
+model/checkpoints/*
+!model/checkpoints/yolov8n_dhakaroadnet_baseline/
+model/checkpoints/yolov8n_dhakaroadnet_baseline/*
+!model/checkpoints/yolov8n_dhakaroadnet_baseline/best.pt
+model/checkpoints/**/epoch*.pt
+model/checkpoints/**/last.pt
+
+# Experiment trackers and local logs
+mlruns/
+wandb/
+lightning_logs/
+tensorboard/
+*.log

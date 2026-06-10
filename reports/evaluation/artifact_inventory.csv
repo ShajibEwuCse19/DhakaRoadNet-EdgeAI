@@ -1,0 +1,12 @@
+artifact_type,path,exists
+selected_model,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\weights\best.pt,True
+best_weight,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\weights\best.pt,True
+best_weight,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\checkpoints\yolov8n_dhakaroadnet_baseline\best.pt,True
+last_weight,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\weights\last.pt,True
+last_weight,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\checkpoints\yolov8n_dhakaroadnet_baseline\last.pt,True
+training_or_eval_results,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\results.csv,True
+training_or_eval_results,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\training\yolov8n_dhakaroadnet_baseline\results.csv,True
+results_plot,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\results.png,True
+results_plot,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\training\yolov8n_dhakaroadnet_baseline\results.png,True
+confusion_matrix,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\training\yolov8n_dhakaroadnet_baseline\confusion_matrix.png,True
+confusion_matrix,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\confusion_matrix.png,True

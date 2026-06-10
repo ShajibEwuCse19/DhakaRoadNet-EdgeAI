@@ -1,0 +1,25 @@
+class_id,class_name,train_instances,valid_instances,test_instances,total_instances,likely_weakness_reasons
+14,Police car,0,1,1,2,very limited total samples; rare class and visual similarity with other vehicles
+7,Leguna,24,1,2,27,very limited total samples; rare class and visual similarity with other vehicles
+13,Pickup truck,24,4,2,30,very limited total samples; rare class and visual similarity with other vehicles
+8,Manhole,36,5,4,45,very limited total samples; road-surface appearance varies with lighting and camera angle
+10,Mini truck,66,5,2,73,limited training samples; rare class and visual similarity with other vehicles
+4,Dog,63,5,7,75,limited training samples; small object size
+9,Micro Bus,101,12,11,124,inspect confusion matrix and examples
+19,Speed Breaker,114,9,13,136,road-surface appearance varies with lighting and camera angle
+17,Road barrier,117,14,7,138,inspect confusion matrix and examples
+5,Garbage van,116,21,10,147,inspect confusion matrix and examples
+22,Van,137,19,25,181,inspect confusion matrix and examples
+21,Truck,156,24,25,205,small object size
+1,Bicycle,183,29,17,229,inspect confusion matrix and examples
+0,Auto rickshaw,212,22,15,249,inspect confusion matrix and examples
+23,Zebra Crossing,236,31,27,294,road-surface appearance varies with lighting and camera angle
+11,Minivan,329,22,39,390,inspect confusion matrix and examples
+18,SUV,334,29,38,401,inspect confusion matrix and examples
+15,Pothole,747,85,111,943,road-surface appearance varies with lighting and camera angle
+12,Motorbike,949,85,122,1156,small object size; likely occlusion and crowding
+20,Three wheelers -CNG-,1467,141,152,1760,inspect confusion matrix and examples
+3,Car,1438,164,173,1775,likely occlusion and crowding
+16,Rickshaw,2300,252,299,2851,likely occlusion and crowding
+2,Bus,2535,289,314,3138,likely occlusion and crowding
+6,Human,7480,744,855,9079,small object size; likely occlusion and crowding

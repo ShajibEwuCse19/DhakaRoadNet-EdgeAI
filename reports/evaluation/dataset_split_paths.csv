@@ -1,0 +1,4 @@
+yaml_key,split,image_dir,label_dir,image_dir_exists,label_dir_exists,image_count,label_count
+train,train,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\train\images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\train\labels,True,True,1754,1754
+val,valid,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\valid\images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\valid\labels,True,True,195,195
+test,test,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\test\images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\test\labels,True,True,196,196
