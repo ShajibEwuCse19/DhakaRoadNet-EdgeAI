@@ -145,12 +145,16 @@ notebooks/.gradio/
 notebooks/runs/
 notebooks/datasets/
 notebooks/datasets/coco*/
+notebooks/datasets
 notebooks/yolo*.pt
 notebooks/*.tmp
 notebooks/*.bak
 
-# Keep reports by default, but ignore local Gradio test uploads/predictions.
-reports/gradio_tests/
+# Keep Gradio test images for GitHub/project demonstration.
+!reports/gradio_tests/
+!reports/gradio_tests/images/
+!reports/gradio_tests/images/**
+reports/gradio_tests/logs/
 
 # Training outputs can be regenerated from the notebook.
 model/runs/
