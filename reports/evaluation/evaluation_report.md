@@ -1,6 +1,6 @@
 # DhakaRoadNet Evaluation Report
 
-Generated: 2026-06-10T11:20:31
+Generated: 2026-06-10T20:40:18
 
 ## Evaluation Objective
 
@@ -8,7 +8,7 @@ This report evaluates the YOLOv8 road-object detector for DhakaRoadNet as a mini
 
 ## Model and Dataset
 
-- Model weights: `Pending: no best.pt discovered`
+- Model weights: `C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\weights\best.pt`
 - Dataset YAML: `C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\data_yolov8.yaml`
 - Number of classes: 24
 - Dataset root: `C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow`
@@ -40,12 +40,12 @@ This report evaluates the YOLOv8 road-object detector for DhakaRoadNet as a mini
 
 | Split | Precision | Recall | F1 | mAP50 | mAP50-95 |
 |---|---:|---:|---:|---:|---:|
-| Validation | Pending | Pending | Pending | Pending | Pending |
-| Test | Pending | Pending | Pending | Pending | Pending |
+| Validation | 0.8362 | 0.7468 | 0.7890 | 0.7980 | 0.5390 |
+| Test | 0.8148 | 0.6914 | 0.7480 | 0.7429 | 0.4783 |
 
 ## Diagnostic Plots
 
-- Confusion matrix: `Pending: run evaluation with plots enabled.`
+- Confusion matrix: `reports/evaluation/plots/yolov8n_dhakaroadnet_baseline_confusion_matrix.png`
 - PR curve: `Pending: run evaluation with plots enabled.`
 - Precision curve: `Pending: run evaluation with plots enabled.`
 - Recall curve: `Pending: run evaluation with plots enabled.`
@@ -78,7 +78,7 @@ Likely causes to inspect:
 
 ## Learning Curve Interpretation
 
-Training results status: `missing_training_results_csv`
+Training results status: `available`
 
 - Overfitting: train loss decreases while validation loss rises or validation mAP falls.
 - Underfitting: both losses remain high and mAP remains low.
@@ -90,7 +90,7 @@ Training results status: `missing_training_results_csv`
 - False positives may come from background clutter, similar vehicle classes, duplicate boxes, shadows, or reflections.
 - False negatives may come from small objects, occlusion, motion blur, low contrast, rare classes, or missing annotation patterns.
 
-Detection-level failure file: `Pending: run error analysis.`
+Detection-level failure file: `reports\evaluation\failure_analysis.csv`
 
 ## Prediction Gallery
 

@@ -1,0 +1,3 @@
+source_group,run_dir,items
+validation_images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\evaluation\predictions\yolov8n_dhakaroadnet_baseline_validation_images,24
+test_images,C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\evaluation\predictions\yolov8n_dhakaroadnet_baseline_test_images,24

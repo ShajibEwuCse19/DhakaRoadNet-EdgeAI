@@ -2,17 +2,20 @@
 
 ## Snapshot
 
-- Model: `Pending: no best.pt discovered`
+- Model: `C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\model\runs\yolov8n_dhakaroadnet_baseline\weights\best.pt`
 - Dataset: `C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\data\roboflow\data_yolov8.yaml`
 - Classes: 24
-- Validation mAP50: Pending
-- Validation mAP50-95: Pending
-- Test mAP50: Pending
-- Test mAP50-95: Pending
+- Validation mAP50: 0.7980
+- Validation mAP50-95: 0.5390
+- Test mAP50: 0.7429
+- Test mAP50-95: 0.4783
 
 ## Metrics Table
 
-_Pending: run evaluation to populate this table._
+| split | precision | recall | f1 | map50 | map50_95 | fitness | save_dir |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| validation | 0.8362406519722372 | 0.7467531418310944 | 0.7889675078091094 | 0.7980055789906281 | 0.5390460360387831 | 0.5390460360387831 | C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\evaluation\artifacts\yolov8n_dhakaroadnet_baseline_validation |
+| test | 0.8147640952953049 | 0.6913929906141892 | 0.7480258065527376 | 0.7428670182226806 | 0.4782787146225128 | 0.4782787146225128 | C:\Users\USER\Desktop\ML\WorkSpace\DhakaRoadNet-EdgeAI\reports\evaluation\artifacts\yolov8n_dhakaroadnet_baseline_test |
 
 ## Class Weakness Summary
 
@@ -32,7 +35,7 @@ _Pending: run evaluation to populate this table._
 ## GitHub Figure References
 
 - Class distribution: `reports/figures/class_distribution.png`
-- Confusion matrix: `Pending: run evaluation with plots enabled.`
+- Confusion matrix: `reports/evaluation/plots/yolov8n_dhakaroadnet_baseline_confusion_matrix.png`
 - PR curve: `Pending: run evaluation with plots enabled.`
 - Sample predictions: `reports\evaluation\predictions`
 
