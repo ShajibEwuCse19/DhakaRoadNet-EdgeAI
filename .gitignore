@@ -144,6 +144,7 @@ labels.cache
 notebooks/.gradio/
 notebooks/runs/
 notebooks/datasets/
+notebooks/datasets/coco*/
 notebooks/yolo*.pt
 notebooks/*.tmp
 notebooks/*.bak
