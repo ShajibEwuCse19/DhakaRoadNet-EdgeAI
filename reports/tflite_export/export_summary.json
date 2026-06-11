@@ -1,0 +1,38 @@
+[
+  {
+    "name": "FP32 TFLite",
+    "status": "success",
+    "path": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\exported\\tflite\\dhakaroadnet_yolov8n_fp32.tflite",
+    "size_mb": 11.78,
+    "half": false,
+    "int8": false,
+    "nms": true,
+    "imgsz": 640,
+    "raw_export_result": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\checkpoints\\yolov8n_dhakaroadnet_baseline\\best_saved_model\\best_float32.tflite",
+    "error": ""
+  },
+  {
+    "name": "FP16 TFLite",
+    "status": "success",
+    "path": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\exported\\tflite\\dhakaroadnet_yolov8n_fp16.tflite",
+    "size_mb": 11.79,
+    "half": true,
+    "int8": false,
+    "nms": true,
+    "imgsz": 640,
+    "raw_export_result": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\checkpoints\\yolov8n_dhakaroadnet_baseline\\best_saved_model\\best_float16.tflite",
+    "error": ""
+  },
+  {
+    "name": "INT8 TFLite",
+    "status": "success",
+    "path": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\exported\\tflite\\dhakaroadnet_yolov8n_int8.tflite",
+    "size_mb": 3.18,
+    "half": false,
+    "int8": true,
+    "nms": true,
+    "imgsz": 640,
+    "raw_export_result": "C:\\Users\\USER\\Desktop\\ML\\WorkSpace\\DhakaRoadNet-EdgeAI\\model\\checkpoints\\yolov8n_dhakaroadnet_baseline\\best_saved_model\\best_int8.tflite",
+    "error": ""
+  }
+]
