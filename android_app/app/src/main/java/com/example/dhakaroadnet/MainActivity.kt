@@ -1,5 +1,6 @@
 package com.example.dhakaroadnet
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detectButton.setOnClickListener { runDetection() }
         binding.detailsButton.setOnClickListener { showDetailsBottomSheet() }
         binding.clearButton.setOnClickListener { resetScreen() }
+        binding.videoButton.setOnClickListener { openLiveDetection() }
     }
 
     private fun setupBackPressHandling() {
@@ -217,6 +219,10 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             .show()
     }
 
+    private fun openLiveDetection() {
+        startActivity(Intent(this, LiveDetectionActivity::class.java))
+    }
+
     private fun openGallery() {
         galleryPicker.launch(
             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -333,7 +339,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detectButton.isVisible = hasImage
         binding.detailsButton.isVisible = hasImage
         binding.clearButton.isVisible = hasImage
-        binding.videoButton.isEnabled = false
+        binding.videoButton.isEnabled = !detectionRunning
 
         binding.selectButton.isEnabled = !detectionRunning
         binding.detectButton.isEnabled = !detectionRunning && hasImage

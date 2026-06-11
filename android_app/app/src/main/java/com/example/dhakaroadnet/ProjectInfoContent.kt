@@ -404,7 +404,7 @@ object ProjectInfoContent {
             "Privacy\nImages stay on-device during app inference.",
             "Deployment\nThe FP16 TFLite model is packaged inside Android assets.",
             "No server\nThe app does not need a cloud API to detect road objects.",
-            "Future direction\nThe disabled video button is reserved for real-time camera stream detection."
+            "Live detection\nThe Video button opens the back-camera preview and runs real-time FP16 detection."
         )
     )
 

@@ -447,21 +447,20 @@
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:enabled="false"
                 android:maxLines="1"
                 android:minWidth="0dp"
                 android:paddingStart="4dp"
                 android:paddingEnd="4dp"
                 android:text="Video"
-                android:textColor="@color/dhaka_text_secondary"
+                android:textColor="@color/dhaka_primary"
                 android:textSize="12sp"
                 android:textStyle="bold"
                 app:icon="@drawable/ic_video"
                 app:iconGravity="top"
                 app:iconPadding="3dp"
                 app:iconSize="26dp"
-                app:iconTint="@color/dhaka_text_secondary"
-                app:strokeColor="@color/dhaka_outline" />
+                app:iconTint="@color/dhaka_primary"
+                app:strokeColor="@color/dhaka_primary" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/clearButton"
