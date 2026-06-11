@@ -10,6 +10,8 @@
     <color name="dhaka_primary">#0B6B4A</color>
     <color name="dhaka_primary_dark">#064C36</color>
     <color name="dhaka_accent">#F4A11A</color>
+    <color name="dhaka_hero_text">#EAF6EF</color>
+    <color name="dhaka_badge_overlay">#33FFFFFF</color>
     <color name="dhaka_text_primary">#14211C</color>
     <color name="dhaka_text_secondary">#5D6B64</color>
     <color name="dhaka_outline">#D5DED8</color>

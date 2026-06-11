@@ -18,6 +18,7 @@ import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.example.dhakaroadnet.databinding.ActivityMainBinding
 import com.example.dhakaroadnet.databinding.BottomSheetDetectionDetailsBinding
+import com.example.dhakaroadnet.databinding.BottomSheetProjectInfoBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
@@ -66,6 +67,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detectButton.setOnClickListener { runDetection() }
         binding.detailsButton.setOnClickListener { showDetailsBottomSheet() }
         binding.clearButton.setOnClickListener { resetScreen() }
+        binding.classesInfoCard.setOnClickListener { showClassesInfo() }
+        binding.edgeInfoCard.setOnClickListener { showEdgeAiInfo() }
+        binding.modelInfoCard.setOnClickListener { showModelInfo() }
+        binding.tfliteInfoCard.setOnClickListener { showTfliteInfo() }
+        binding.datasetInfoCard.setOnClickListener { showDatasetInfo() }
+        binding.androidInfoCard.setOnClickListener { showAndroidInfo() }
     }
 
     private fun showImageSourceDialog() {
@@ -120,6 +127,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             binding.resultPlaceholderText.isVisible = true
             binding.summaryText.text = "Image selected. Tap Detect to run DhakaRoadNet on-device."
             updateButtonState()
+            binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
         } catch (exception: Exception) {
             showError("Could not read image: ${exception.message}")
         }
@@ -187,14 +195,24 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.progressBar.isVisible = false
         binding.summaryText.text = "Ready. Select an image to begin."
         updateButtonState()
+        binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
     }
 
     private fun updateButtonState() {
+        val hasImage = selectedBitmap != null
+        val hasDetectionDetails = latestOutput != null
+
+        binding.homeContent.isVisible = !hasImage
+        binding.detectionContent.isVisible = hasImage
+        binding.detectButton.isVisible = hasImage
+        binding.detailsButton.isVisible = hasImage
+        binding.clearButton.isVisible = hasImage
+        binding.videoButton.isEnabled = false
+
         binding.selectButton.isEnabled = !detectionRunning
-        binding.detectButton.isEnabled = !detectionRunning && selectedBitmap != null
-        binding.detailsButton.isEnabled = !detectionRunning && latestOutput != null
-        binding.clearButton.isEnabled = !detectionRunning &&
-            (selectedBitmap != null || latestOutput != null || latestAnnotatedBitmap != null)
+        binding.detectButton.isEnabled = !detectionRunning && hasImage
+        binding.detailsButton.isEnabled = !detectionRunning && hasDetectionDetails
+        binding.clearButton.isEnabled = !detectionRunning && hasImage
     }
 
     private fun buildDetectionSummary(output: DetectionOutput): String {
@@ -209,7 +227,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             .sortedByDescending { it.value }
             .joinToString(", ") { "${it.key} x${it.value}" }
 
-        return "${output.detections.size} object(s) detected: $objectCounts. Inference: ${output.inferenceTimeMs} ms. Tap Details for annotation data."
+        return "${output.detections.size} object(s) detected: $objectCounts. Inference: ${output.inferenceTimeMs} ms. Tap Info for annotation data."
     }
 
     private fun showDetailsBottomSheet() {
@@ -226,6 +244,136 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         BottomSheetDialog(this).apply {
             setContentView(sheetBinding.root)
             show()
+        }
+    }
+
+    private fun showClassesInfo() {
+        showProjectInfo(
+            title = "24 Road-Object Classes",
+            body = "DhakaRoadNet is trained for local road scenes where common traffic objects, vulnerable road users, road defects, and markings can appear together. These are the model labels used by the Android app.",
+            rows = loadClassInfoRows()
+        )
+    }
+
+    private fun showEdgeAiInfo() {
+        showProjectInfo(
+            title = "Edge AI Goal",
+            body = "The project moves from dataset preparation to YOLOv8 training, evaluation, TFLite export, and Android deployment. In V1, inference runs locally on the phone, so images do not need to be sent to a server.",
+            rows = listOf(
+                "Privacy\nImages stay on-device during app inference.",
+                "Deployment\nThe FP16 TFLite model is packaged inside the Android app assets.",
+                "Future direction\nThe disabled video button is reserved for real-time camera stream detection."
+            )
+        )
+    }
+
+    private fun showModelInfo() {
+        showProjectInfo(
+            title = "YOLOv8n Model",
+            body = "YOLOv8n was selected because it is compact enough for mobile deployment while still giving practical detection quality for this beginner Edge AI project.",
+            rows = listOf(
+                "Model family\nYOLOv8 nano object detector.",
+                "Parameters\nThe trained best.pt model has about 3.02 million parameters.",
+                "Input\nThe Android pipeline prepares images for 640 x 640 model inference.",
+                "Output\nThe exported model returns detected boxes, confidence scores, and class IDs."
+            )
+        )
+    }
+
+    private fun showTfliteInfo() {
+        showProjectInfo(
+            title = "TFLite FP16 Export",
+            body = "The Android app uses the FP16 TensorFlow Lite export because it matched the trained model behavior reliably during testing.",
+            rows = listOf(
+                "File\ndhakaroadnet_yolov8n_fp16.tflite",
+                "Labels\nlabels.txt is packaged with the model.",
+                "Why FP16\nIt is smaller than a full precision model and was more stable than the experimental INT8 export for V1."
+            )
+        )
+    }
+
+    private fun showDatasetInfo() {
+        showProjectInfo(
+            title = "Dataset Focus",
+            body = "The dataset focuses on Bangladeshi urban traffic conditions, especially the object mix seen on Dhaka roads. This makes the project more locally meaningful than a generic demo detector.",
+            rows = listOf(
+                "Scene type\nRoad images with mixed vehicles, people, road hazards, and markings.",
+                "Dataset pipeline\nDownload, verification, visualization, training, evaluation, export, and Android testing are organized in notebooks.",
+                "Research value\nThe project demonstrates the full path from custom data to an on-device AI application."
+            )
+        )
+    }
+
+    private fun showAndroidInfo() {
+        showProjectInfo(
+            title = "Android V1 App",
+            body = "This app is a native Kotlin/XML Android implementation. It uses gallery upload or camera capture, preprocesses the bitmap, runs the local TFLite model, and draws detections on the result image.",
+            rows = listOf(
+                "Architecture\nSmall MVP-style app with Activity, Presenter, Detector, Preprocessor, and Renderer.",
+                "Current flow\nSelect image, run detection, compare input and output, then open annotation details.",
+                "Next step\nReal-time video detection can be added after the image workflow is stable."
+            )
+        )
+    }
+
+    private fun showProjectInfo(title: String, body: String, rows: List<String> = emptyList()) {
+        val sheetBinding = BottomSheetProjectInfoBinding.inflate(layoutInflater)
+        sheetBinding.projectInfoTitleText.text = title
+        sheetBinding.projectInfoBodyText.text = body
+        sheetBinding.projectInfoDivider.isVisible = rows.isNotEmpty()
+        sheetBinding.projectInfoListContainer.removeAllViews()
+
+        rows.forEach { row ->
+            sheetBinding.projectInfoListContainer.addView(createDetailTextView(row))
+        }
+
+        BottomSheetDialog(this).apply {
+            setContentView(sheetBinding.root)
+            show()
+        }
+    }
+
+    private fun loadClassInfoRows(): List<String> {
+        val labels = assets.open(DhakaRoadNetDetector.LABELS_FILE)
+            .bufferedReader()
+            .use { reader ->
+                reader.readLines()
+                    .map { it.trim() }
+                    .filter { it.isNotEmpty() }
+            }
+
+        return labels.mapIndexed { index, label ->
+            "${index + 1}. $label\n${classDescription(label)}"
+        }
+    }
+
+    private fun classDescription(label: String): String {
+        return when (label) {
+            "Auto rickshaw" -> "Small three-wheeler vehicle common in city traffic."
+            "Bicycle" -> "Light two-wheeler that needs careful detection near mixed traffic."
+            "Bus" -> "Large passenger vehicle with high road-space impact."
+            "Car" -> "Common private vehicle class for urban traffic monitoring."
+            "Dog" -> "Animal class included for road safety and unexpected obstacles."
+            "Garbage van" -> "Service vehicle often seen in city road environments."
+            "Human" -> "Pedestrian or road user class important for safety analysis."
+            "Leguna" -> "Local public transport vehicle common in Bangladesh."
+            "Manhole" -> "Road-surface utility object that can affect safe driving."
+            "Micro Bus" -> "Medium passenger vehicle class."
+            "Mini truck" -> "Small cargo vehicle used in urban delivery traffic."
+            "Minivan" -> "Small passenger or utility van class."
+            "Motorbike" -> "High-frequency two-wheeler class in Dhaka traffic."
+            "Pickup truck" -> "Light cargo vehicle class."
+            "Police car" -> "Emergency or law-enforcement vehicle class."
+            "Pothole" -> "Road defect class important for road-condition monitoring."
+            "Rickshaw" -> "Human-powered transport class common in local roads."
+            "Road barrier" -> "Temporary or fixed road-control object."
+            "SUV" -> "Larger private vehicle class."
+            "Speed Breaker" -> "Road calming structure that can affect vehicle motion."
+            "Three wheelers -CNG-" -> "CNG three-wheeler class common in Bangladesh."
+            "Truck" -> "Large cargo vehicle class."
+            "Van" -> "Utility or passenger van class."
+            "Zebra Crossing" -> "Road marking class for pedestrian crossing areas."
+            else -> "Road-object class used by the DhakaRoadNet detector."
         }
     }
 
