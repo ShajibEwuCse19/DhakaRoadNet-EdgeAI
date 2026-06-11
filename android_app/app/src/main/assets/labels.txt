@@ -1,0 +1,24 @@
+Auto rickshaw
+Bicycle
+Bus
+Car
+Dog
+Garbage van
+Human
+Leguna
+Manhole
+Micro Bus
+Mini truck
+Minivan
+Motorbike
+Pickup truck
+Police car
+Pothole
+Rickshaw
+Road barrier
+SUV
+Speed Breaker
+Three wheelers -CNG-
+Truck
+Van
+Zebra Crossing
