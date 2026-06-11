@@ -6,15 +6,24 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import com.example.dhakaroadnet.databinding.ActivityMainBinding
 import com.example.dhakaroadnet.databinding.BottomSheetDetectionDetailsBinding
+import com.example.dhakaroadnet.databinding.ItemProjectTopicCardBinding
 import com.example.dhakaroadnet.databinding.BottomSheetProjectInfoBinding
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
@@ -27,6 +36,14 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private var latestOutput: DetectionOutput? = null
     private var pendingCameraUri: Uri? = null
     private var detectionRunning = false
+    private var currentSlideIndex = 0
+    private val slideshowHandler = Handler(Looper.getMainLooper())
+    private val slideshowRunnable = object : Runnable {
+        override fun run() {
+            moveSlide(1)
+            scheduleNextSlide()
+        }
+    }
 
     private val galleryPicker = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
@@ -53,6 +70,9 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
 
         presenter = DetectionPresenter(this, this)
         bindActions()
+        setupBackPressHandling()
+        setupReportSlideshow()
+        setupProjectTopics()
         resetScreen()
     }
 
@@ -61,14 +81,127 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detectButton.setOnClickListener { runDetection() }
         binding.detailsButton.setOnClickListener { showDetailsBottomSheet() }
         binding.clearButton.setOnClickListener { resetScreen() }
-        binding.classesInfoCard.setOnClickListener {
-            showProjectInfo(ProjectInfoContent.classesInfo(loadLabels()))
+    }
+
+    private fun setupBackPressHandling() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    showExitConfirmationDialog()
+                }
+            }
+        )
+    }
+
+    private fun showExitConfirmationDialog() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Exit DhakaRoadNet?")
+            .setMessage("Do you want to close the app or stay on this screen?")
+            .setNegativeButton("Stay", null)
+            .setPositiveButton("Exit") { _, _ -> finish() }
+            .show()
+    }
+
+    private fun setupReportSlideshow() {
+        showSlide(0)
+        scheduleNextSlide()
+    }
+
+    private fun scheduleNextSlide() {
+        slideshowHandler.removeCallbacks(slideshowRunnable)
+        slideshowHandler.postDelayed(slideshowRunnable, SLIDE_DELAY_MS)
+    }
+
+    private fun moveSlide(offset: Int) {
+        val slideCount = ProjectSlides.slides.size
+        currentSlideIndex = (currentSlideIndex + offset + slideCount) % slideCount
+        showSlide(currentSlideIndex)
+    }
+
+    private fun showSlide(index: Int) {
+        val slide = ProjectSlides.slides[index]
+        binding.reportImageView.setImageResource(slide.imageResId)
+        binding.reportCaptionText.text = slide.caption
+        renderSlideDots(index)
+    }
+
+    private fun renderSlideDots(activeIndex: Int) {
+        binding.reportDotContainer.removeAllViews()
+        ProjectSlides.slides.forEachIndexed { index, _ ->
+            binding.reportDotContainer.addView(createSlideDot(isActive = index == activeIndex))
         }
-        binding.edgeInfoCard.setOnClickListener { showProjectInfo(ProjectInfoContent.edgeAiInfo()) }
-        binding.modelInfoCard.setOnClickListener { showProjectInfo(ProjectInfoContent.modelInfo()) }
-        binding.tfliteInfoCard.setOnClickListener { showProjectInfo(ProjectInfoContent.tfliteInfo()) }
-        binding.datasetInfoCard.setOnClickListener { showProjectInfo(ProjectInfoContent.datasetInfo()) }
-        binding.androidInfoCard.setOnClickListener { showProjectInfo(ProjectInfoContent.androidInfo()) }
+    }
+
+    private fun createSlideDot(isActive: Boolean): TextView {
+        return TextView(this).apply {
+            text = "•"
+            textSize = if (isActive) 26f else 20f
+            setTextColor(
+                ContextCompat.getColor(
+                    this@MainActivity,
+                    if (isActive) R.color.dhaka_primary else R.color.dhaka_outline
+                )
+            )
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                marginStart = dp(3)
+                marginEnd = dp(3)
+            }
+        }
+    }
+
+    private fun setupProjectTopics() {
+        binding.projectTopicContainer.removeAllViews()
+        ProjectInfoContent.topicCards(loadLabels())
+            .chunked(TOPIC_COLUMNS)
+            .forEach { rowTopics ->
+                binding.projectTopicContainer.addView(createTopicRow(rowTopics))
+            }
+    }
+
+    private fun createTopicRow(topics: List<ProjectTopicCard>): LinearLayout {
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(12)
+            }
+
+            topics.forEachIndexed { index, topic ->
+                addView(createTopicCard(topic, index))
+            }
+        }
+    }
+
+    private fun createTopicCard(topic: ProjectTopicCard, indexInRow: Int): MaterialCardView {
+        val cardBinding = ItemProjectTopicCardBinding.inflate(LayoutInflater.from(this))
+        val accentColor = ContextCompat.getColor(this, topic.accentColorRes)
+
+        cardBinding.topicHighlightText.text = topic.highlight
+        cardBinding.topicTitleText.text = topic.title
+        cardBinding.topicSubtitleText.text = topic.subtitle
+        cardBinding.topicHighlightText.setTextColor(accentColor)
+
+        return cardBinding.root.apply {
+            strokeColor = accentColor
+            setOnClickListener { showProjectInfo(topic.info) }
+            layoutParams = LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
+            ).apply {
+                if (indexInRow == 0) {
+                    marginEnd = dp(6)
+                } else {
+                    marginStart = dp(6)
+                }
+            }
+        }
     }
 
     private fun showImageSourceDialog() {
@@ -256,9 +389,15 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     }
 
     override fun onDestroy() {
+        slideshowHandler.removeCallbacks(slideshowRunnable)
         if (::presenter.isInitialized) {
             presenter.release()
         }
         super.onDestroy()
+    }
+
+    companion object {
+        private const val SLIDE_DELAY_MS = 4_500L
+        private const val TOPIC_COLUMNS = 2
     }
 }

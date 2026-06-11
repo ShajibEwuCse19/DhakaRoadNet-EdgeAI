@@ -101,6 +101,57 @@
                     </HorizontalScrollView>
                 </LinearLayout>
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/reportSlideshowCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    app:cardBackgroundColor="@color/dhaka_surface"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/dhaka_outline"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="230dp"
+                            android:background="@drawable/bg_image_panel">
+
+                            <ImageView
+                                android:id="@+id/reportImageView"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:contentDescription="DhakaRoadNet report slideshow image"
+                                android:padding="4dp"
+                                android:scaleType="fitCenter" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:id="@+id/reportCaptionText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:lineSpacingExtra="2dp"
+                            android:textColor="@color/dhaka_text_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:id="@+id/reportDotContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:orientation="horizontal" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -115,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="4dp"
-                    android:text="DhakaRoadNet studies road objects that matter in dense local traffic: vehicles, vulnerable road users, road hazards, and surface markings. The goal is a practical mobile AI system that can detect objects directly on-device without a server, making it suitable for Edge AI research, field testing, and future real-time road-safety applications."
+                    android:text="DhakaRoadNet is a custom Edge AI project built from real Dhaka road video and image collection, handcrafted dataset preparation, YOLOv8n training on a personal GPU device, and Android TensorFlow Lite deployment. It is not a generic benchmark-data demo; it is a local road-scene dataset and app pipeline for Bangladeshi urban traffic."
                     android:textColor="@color/dhaka_text_secondary"
                     android:textSize="14sp" />
 
@@ -129,312 +180,11 @@
                     android:textStyle="bold" />
 
                 <LinearLayout
+                    android:id="@+id/projectTopicContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/classesInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_accent"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="24"
-                                android:textColor="@color/dhaka_accent"
-                                android:textSize="28sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Road classes"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Vehicles, hazards, people, and markings"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/edgeInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_primary"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Edge AI"
-                                android:textColor="@color/dhaka_primary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Runs on phone"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="No cloud server is required for V1 inference"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/modelInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_outline"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="YOLOv8n"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="3.02M params"
-                                android:textColor="@color/dhaka_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Compact detector for mobile deployment"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/tfliteInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_outline"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="FP16"
-                                android:textColor="@color/dhaka_primary"
-                                android:textSize="24sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="TFLite export"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Chosen for stable Android results"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/datasetInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginEnd="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_outline"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Dataset"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Dhaka road focus"
-                                android:textColor="@color/dhaka_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Custom urban traffic images and labels"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/androidInfoCard"
-                        android:layout_width="0dp"
-                        android:layout_height="126dp"
-                        android:layout_marginStart="6dp"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        app:cardBackgroundColor="@color/dhaka_surface"
-                        app:cardCornerRadius="8dp"
-                        app:cardElevation="0dp"
-                        app:strokeColor="@color/dhaka_outline"
-                        app:strokeWidth="1dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical"
-                            android:padding="14dp">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Android"
-                                android:textColor="@color/dhaka_text_primary"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Native V1 app"
-                                android:textColor="@color/dhaka_primary"
-                                android:textSize="14sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Kotlin, XML, camera, gallery, and local model"
-                                android:textColor="@color/dhaka_text_secondary"
-                                android:textSize="12sp" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                    android:orientation="vertical">
                 </LinearLayout>
 
                 <TextView
@@ -599,12 +349,12 @@
         android:id="@+id/actionBarCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
         app:cardBackgroundColor="@color/dhaka_surface"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -614,75 +364,78 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:padding="10dp">
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
-                android:layout_marginEnd="6dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="8dp"
                 android:indeterminate="true"
                 android:visibility="gone" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/selectButton"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginEnd="5dp"
+                android:layout_height="66dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:minWidth="0dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="Select"
-                android:textSize="10sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:icon="@drawable/ic_add_photo"
                 app:iconGravity="top"
-                app:iconPadding="1dp"
-                app:iconSize="20dp" />
+                app:iconPadding="3dp"
+                app:iconSize="26dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/detectButton"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginEnd="5dp"
+                android:layout_height="66dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:enabled="false"
                 android:maxLines="1"
                 android:minWidth="0dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="Detect"
-                android:textSize="10sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 app:icon="@drawable/ic_detect"
                 app:iconGravity="top"
-                app:iconPadding="1dp"
-                app:iconSize="20dp" />
+                app:iconPadding="3dp"
+                app:iconSize="26dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/detailsButton"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginEnd="5dp"
+                android:layout_height="66dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:enabled="false"
                 android:maxLines="1"
                 android:minWidth="0dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="Info"
                 android:textColor="@color/dhaka_primary"
-                android:textSize="10sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 app:icon="@drawable/ic_details"
                 app:iconGravity="top"
-                app:iconPadding="1dp"
-                app:iconSize="20dp"
+                app:iconPadding="3dp"
+                app:iconSize="26dp"
                 app:iconTint="@color/dhaka_primary"
                 app:strokeColor="@color/dhaka_primary" />
 
@@ -690,22 +443,23 @@
                 android:id="@+id/videoButton"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
-                android:layout_marginEnd="5dp"
+                android:layout_height="66dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:enabled="false"
                 android:maxLines="1"
                 android:minWidth="0dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="Video"
                 android:textColor="@color/dhaka_text_secondary"
-                android:textSize="10sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 app:icon="@drawable/ic_video"
                 app:iconGravity="top"
-                app:iconPadding="1dp"
-                app:iconSize="20dp"
+                app:iconPadding="3dp"
+                app:iconSize="26dp"
                 app:iconTint="@color/dhaka_text_secondary"
                 app:strokeColor="@color/dhaka_outline" />
 
@@ -713,21 +467,22 @@
                 android:id="@+id/clearButton"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
-                android:layout_height="52dp"
+                android:layout_height="66dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:minWidth="0dp"
-                android:paddingStart="2dp"
-                android:paddingEnd="2dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:text="Clear"
                 android:textColor="@color/dhaka_road_soft"
-                android:textSize="10sp"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="gone"
                 app:icon="@drawable/ic_clear"
                 app:iconGravity="top"
-                app:iconPadding="1dp"
-                app:iconSize="20dp"
+                app:iconPadding="3dp"
+                app:iconSize="26dp"
                 app:iconTint="@color/dhaka_road_soft"
                 app:strokeColor="@color/dhaka_outline" />
         </LinearLayout>

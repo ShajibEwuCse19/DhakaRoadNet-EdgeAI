@@ -16,17 +16,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5728f6ad-24f4-49f0-b073-342f678f8de3" name="Changes" comment="add padding">
+    <list default="true" id="5728f6ad-24f4-49f0-b073-342f678f8de3" name="Changes" comment="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility.">
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/9.4.1/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/ProjectInfoContent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/ProjectInfoContent.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,14 +215,23 @@
       <option name="project" value="LOCAL" />
       <updated>1781194690018</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility.">
+      <option name="closed" value="true" />
+      <created>1781204526133</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1781204526133</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Android app initial setup" />
     <MESSAGE value="Implement full detection system version-1" />
     <MESSAGE value="add padding" />
-    <option name="LAST_COMMIT_MESSAGE" value="add padding" />
+    <MESSAGE value="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility." />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
