@@ -94,6 +94,7 @@ ipython_config.py
 # virtualenv
 venv/
 .venv/
+.venv-tflite/
 env/
 ENV/
 env.bak/
