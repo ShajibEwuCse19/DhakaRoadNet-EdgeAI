@@ -2,4 +2,17 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="dhaka_background">#F4F7F5</color>
+    <color name="dhaka_surface">#FFFFFF</color>
+    <color name="dhaka_surface_muted">#E8EFEA</color>
+    <color name="dhaka_road">#263238</color>
+    <color name="dhaka_road_soft">#41525B</color>
+    <color name="dhaka_primary">#0B6B4A</color>
+    <color name="dhaka_primary_dark">#064C36</color>
+    <color name="dhaka_accent">#F4A11A</color>
+    <color name="dhaka_text_primary">#14211C</color>
+    <color name="dhaka_text_secondary">#5D6B64</color>
+    <color name="dhaka_outline">#D5DED8</color>
+    <color name="dhaka_detection">#00C853</color>
+    <color name="dhaka_error">#B3261E</color>
 </resources>

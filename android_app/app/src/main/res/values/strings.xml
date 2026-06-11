@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DhakaRoadNet</string>
+    <string name="project_summary">Edge AI road-object detection for Bangladeshi road environments. The model runs locally on Android using TensorFlow Lite FP16.</string>
+    <string name="model_summary">YOLOv8n - TFLite FP16 - 3.02M parameters - 24 classes - 640 x 640 input</string>
 </resources>

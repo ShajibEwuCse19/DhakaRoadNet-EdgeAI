@@ -1,7 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.DhakaRoadNet" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:fontFamily">sans</item>
+        <item name="android:statusBarColor">@color/dhaka_road</item>
+        <item name="android:navigationBarColor">@color/dhaka_road</item>
+        <item name="colorPrimary">@color/dhaka_primary</item>
+        <item name="colorPrimaryDark">@color/dhaka_primary_dark</item>
+        <item name="colorSecondary">@color/dhaka_accent</item>
+        <item name="materialButtonStyle">@style/Widget.DhakaRoadNet.Button</item>
     </style>
 </resources>
