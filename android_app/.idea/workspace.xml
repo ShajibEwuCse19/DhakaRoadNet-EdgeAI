@@ -16,9 +16,18 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5728f6ad-24f4-49f0-b073-342f678f8de3" name="Changes" comment="Android app initial setup">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="5728f6ad-24f4-49f0-b073-342f678f8de3" name="Changes" comment="fix small crash">
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionContract.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionContract.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionOverlayView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionOverlayView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionPresenter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionPresenter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionRenderer.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionRenderer.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionResult.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionResult.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionTextFormatter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DetectionTextFormatter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DhakaRoadNetDetector.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/DhakaRoadNetDetector.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/ImagePreprocessor.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/ImagePreprocessor.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/LiveDetectionActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/LiveDetectionActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/LiveFrameConverter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/LiveFrameConverter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/dhakaroadnet/MainActivity.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +37,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[LocalEmulator::path=/Users/shajib/.android/avd/Pixel_5.avd]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=976fca13]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -91,9 +100,10 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/shajib/Desktop/practice/DhakaRoadNet-EdgeAI/android_app&quot;
   }
@@ -190,12 +200,75 @@
       <option name="project" value="LOCAL" />
       <updated>1781188121922</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Implement full detection system version-1">
+      <option name="closed" value="true" />
+      <created>1781194597253</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1781194597253</updated>
+    </task>
+    <task id="LOCAL-00004" summary="add padding">
+      <option name="closed" value="true" />
+      <created>1781194690018</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1781194690018</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility.">
+      <option name="closed" value="true" />
+      <created>1781204526133</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1781204526133</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Implement automated report slideshow and dynamic project information cards&#10;&#10;*   Add an automated report slideshow feature to `MainActivity` with navigation dots and associated assets.&#10;*   Refactor project information to use dynamic cards generated from `ProjectInfoContent` instead of static layouts.&#10;*   Update `activity_main` UI with improved button styling, larger touch targets, and a revamped action bar.&#10;*   Implement back press handling with an exit confirmation dialog.&#10;*   Introduce `ProjectSlides.kt` and `item_project_topic_card.xml` to support the new reporting and information UI.">
+      <option name="closed" value="true" />
+      <created>1781206258111</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1781206258111</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add result saving, adjustable confidence thresholds, and onboarding tips&#10;&#10;- Implement &quot;Save Result&quot; to export annotated bitmaps to the device gallery using MediaStore.&#10;- Add UI controls to dynamically adjust the confidence threshold in `LiveDetectionActivity`.&#10;- Introduce a first-run onboarding popup to guide users through the application's features.&#10;- Enhance the report slideshow with manual navigation dots and pause/resume functionality.&#10;- Update `AndroidManifest.xml` with storage permissions for legacy Android versions.&#10;- Refine layouts for `MainActivity` and `LiveDetectionActivity` to accommodate new action buttons.">
+      <option name="closed" value="true" />
+      <created>1781242959889</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1781242959889</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Enhance research showcase and add demo sample functionality&#10;&#10;- Implement a research pipeline showcase and benchmark evidence UI in `MainActivity` to visualize ML stages and model limitations.&#10;- Add built-in Dhaka road demo samples to allow testing without requiring local gallery access.&#10;- Implement detection result sharing via `FileProvider` and `Intent.ACTION_SEND`.&#10;- Improve camera permission handling in `LiveDetectionActivity` with detailed rationale dialogs and links to system settings.&#10;- Refine `DetectionTextFormatter` and UI layouts to provide clearer feedback on offline FP16 inference results and performance benchmarks.&#10;- Add new reusable UI components including `item_showcase_card` and `item_demo_sample_card`.&#10;- Update lifecycle management in `LiveDetectionActivity` to better handle camera provider initialization and permission changes.">
+      <option name="closed" value="true" />
+      <created>1781245056918</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1781245056918</updated>
+    </task>
+    <task id="LOCAL-00009" summary="fix small crash">
+      <option name="closed" value="true" />
+      <created>1781245870982</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1781245870982</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Android app initial setup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Android app initial setup" />
+    <MESSAGE value="Implement full detection system version-1" />
+    <MESSAGE value="add padding" />
+    <MESSAGE value="Refactor MainActivity by extracting text formatting and project information into dedicated utility objects&#10;&#10;*   Move detection result formatting logic to `DetectionTextFormatter`.&#10;*   Extract static project and model information to `ProjectInfoContent`.&#10;*   Create `ViewExtensions.kt` for reusable UI helper functions.&#10;*   Simplify `MainActivity` by removing private helper methods and reducing class responsibility." />
+    <MESSAGE value="Implement automated report slideshow and dynamic project information cards&#10;&#10;*   Add an automated report slideshow feature to `MainActivity` with navigation dots and associated assets.&#10;*   Refactor project information to use dynamic cards generated from `ProjectInfoContent` instead of static layouts.&#10;*   Update `activity_main` UI with improved button styling, larger touch targets, and a revamped action bar.&#10;*   Implement back press handling with an exit confirmation dialog.&#10;*   Introduce `ProjectSlides.kt` and `item_project_topic_card.xml` to support the new reporting and information UI." />
+    <MESSAGE value="Add result saving, adjustable confidence thresholds, and onboarding tips&#10;&#10;- Implement &quot;Save Result&quot; to export annotated bitmaps to the device gallery using MediaStore.&#10;- Add UI controls to dynamically adjust the confidence threshold in `LiveDetectionActivity`.&#10;- Introduce a first-run onboarding popup to guide users through the application's features.&#10;- Enhance the report slideshow with manual navigation dots and pause/resume functionality.&#10;- Update `AndroidManifest.xml` with storage permissions for legacy Android versions.&#10;- Refine layouts for `MainActivity` and `LiveDetectionActivity` to accommodate new action buttons." />
+    <MESSAGE value="Enhance research showcase and add demo sample functionality&#10;&#10;- Implement a research pipeline showcase and benchmark evidence UI in `MainActivity` to visualize ML stages and model limitations.&#10;- Add built-in Dhaka road demo samples to allow testing without requiring local gallery access.&#10;- Implement detection result sharing via `FileProvider` and `Intent.ACTION_SEND`.&#10;- Improve camera permission handling in `LiveDetectionActivity` with detailed rationale dialogs and links to system settings.&#10;- Refine `DetectionTextFormatter` and UI layouts to provide clearer feedback on offline FP16 inference results and performance benchmarks.&#10;- Add new reusable UI components including `item_showcase_card` and `item_demo_sample_card`.&#10;- Update lifecycle management in `LiveDetectionActivity` to better handle camera provider initialization and permission changes." />
+    <MESSAGE value="fix small crash" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix small crash" />
   </component>
   <component name="play_dynamic_filters_status">
     <option name="appIdToCheckInfo">
