@@ -63,30 +63,20 @@ DhakaRoadNet is not only a model-training notebook. It is a complete applied AI 
 | App mode | Offline on-device inference |
 | Android TFLite speed | Around 500 ms per inference on tested devices |
 
-## Demo Video and Visual Gallery
+## App UI Preview
 
-Click the preview below to watch the main DhakaRoadNet app demo.
+The Android app presents the project overview, image/camera detection flow, and on-device model output in a simple native interface.
 
 <p align="center">
-  <a href="https://youtu.be/Eo7YuJk4OxI">
-    <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_1.jpg" width="520" alt="Watch DhakaRoadNet demo video on YouTube" />
+  <a href="reports/app_ui/app_ui.jpeg">
+    <img src="reports/app_ui/app_ui.jpeg" width="185" alt="DhakaRoadNet Android app home screen" />
   </a>
-</p>
-
-<p align="center">
-  <a href="https://youtu.be/Eo7YuJk4OxI"><strong>Watch Demo Video 1 on YouTube</strong></a>
-</p>
-
-<p align="center">
-  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_1.jpg" width="240" alt="DhakaRoadNet demo road sample 1" />
-  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_2.jpg" width="240" alt="DhakaRoadNet demo road sample 2" />
-  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_3.jpg" width="240" alt="DhakaRoadNet demo road sample 3" />
-</p>
-
-<p align="center">
-  <img src="android_app/app/src/main/res/drawable-nodpi/report_validation_predictions.jpg" width="240" alt="DhakaRoadNet validation prediction report" />
-  <img src="android_app/app/src/main/res/drawable-nodpi/report_test_predictions.jpg" width="240" alt="DhakaRoadNet test prediction report" />
-  <img src="android_app/app/src/main/res/drawable-nodpi/report_gradio_test.png" width="240" alt="DhakaRoadNet Gradio test report" />
+  <a href="reports/app_ui/app_ui2.jpeg">
+    <img src="reports/app_ui/app_ui2.jpeg" width="185" alt="DhakaRoadNet Android app image detection screen" />
+  </a>
+  <a href="reports/app_ui/app_ui3.jpeg">
+    <img src="reports/app_ui/app_ui3.jpeg" width="185" alt="DhakaRoadNet Android app detection details screen" />
+  </a>
 </p>
 
 ## Android App Features
