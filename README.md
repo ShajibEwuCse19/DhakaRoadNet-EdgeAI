@@ -61,6 +61,33 @@ DhakaRoadNet is not only a model-training notebook. It is a complete applied AI 
 | Test mAP50-95 | 0.4783 |
 | Android model | TFLite FP16 |
 | App mode | Offline on-device inference |
+| Android TFLite speed | Around 500 ms per inference on tested devices |
+
+## Demo Video and Visual Gallery
+
+Click the preview below to watch the main DhakaRoadNet app demo.
+
+<p align="center">
+  <a href="https://youtu.be/Eo7YuJk4OxI">
+    <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_1.jpg" width="520" alt="Watch DhakaRoadNet demo video on YouTube" />
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/Eo7YuJk4OxI"><strong>Watch Demo Video 1 on YouTube</strong></a>
+</p>
+
+<p align="center">
+  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_1.jpg" width="240" alt="DhakaRoadNet demo road sample 1" />
+  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_2.jpg" width="240" alt="DhakaRoadNet demo road sample 2" />
+  <img src="android_app/app/src/main/res/drawable-nodpi/demo_sample_road_3.jpg" width="240" alt="DhakaRoadNet demo road sample 3" />
+</p>
+
+<p align="center">
+  <img src="android_app/app/src/main/res/drawable-nodpi/report_validation_predictions.jpg" width="240" alt="DhakaRoadNet validation prediction report" />
+  <img src="android_app/app/src/main/res/drawable-nodpi/report_test_predictions.jpg" width="240" alt="DhakaRoadNet test prediction report" />
+  <img src="android_app/app/src/main/res/drawable-nodpi/report_gradio_test.png" width="240" alt="DhakaRoadNet Gradio test report" />
+</p>
 
 ## Android App Features
 
@@ -73,6 +100,7 @@ DhakaRoadNet is not only a model-training notebook. It is a complete applied AI 
 - Run live video detection with CameraX.
 - Adjust live confidence threshold.
 - View project research details inside the app.
+- In real-device testing, the FP16 TFLite model usually runs around 500 ms per inference. This can vary by phone hardware, CPU load, image complexity, and live camera mode.
 
 ## Full Project Workflow
 
@@ -303,6 +331,18 @@ flowchart TD
 | FP16 TFLite | Success | 11.79 MB | Yes | Used in Android app |
 | INT8 TFLite | Success | 3.18 MB | Yes | Kept for future calibration |
 
+## Android Inference Speed
+
+| Item | Value |
+|---|---|
+| Runtime model | `dhakaroadnet_yolov8n_fp16.tflite` |
+| Input size | 640 x 640 |
+| Runtime | TensorFlow Lite on Android |
+| Observed speed | Around 500 ms per inference on tested devices |
+| Timing note | Real-device timing; speed can vary by phone hardware, CPU load, image complexity, and live camera mode |
+
+The Android app measures inference time in milliseconds and shows it in image detection results and live detection status.
+
 ## Android App Architecture
 
 ```mermaid
@@ -482,7 +522,7 @@ DhakaRoadNet-EdgeAI/
 | ![Class distribution](reports/figures/class_distribution.png) | ![Confusion matrix](reports/evaluation/plots/yolov8n_dhakaroadnet_baseline_test_confusion_matrix_normalized.png) |
 | ![Sample visualization](reports/figures/sample_visualization.png) | ![Training loss curves](reports/evaluation/plots/training_validation_loss_curves.png) |
 | ![Training results](reports/training/yolov8n_dhakaroadnet_baseline/results.png) | ![Gradio test](reports/gradio_tests/images/test_1.png) |
-| ![Validation predictions](reports/evaluation/artifacts/yolov8n_dhakaroadnet_baseline_validation/val_batch0_pred.jpg) | ![TFLite FP16 prediction](android_app/app/src/main/res/drawable-nodpi/report_tflite_fp16_prediction.jpg) |
+| ![Validation predictions](reports/evaluation/artifacts/yolov8n_dhakaroadnet_baseline_validation/val_batch0_pred.jpg) | ![Test predictions](android_app/app/src/main/res/drawable-nodpi/report_test_predictions.jpg) |
 
 ## More Report Folders
 
