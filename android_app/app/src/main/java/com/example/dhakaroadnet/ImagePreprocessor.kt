@@ -10,6 +10,9 @@ import java.nio.ByteOrder
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * @author Shajib
+ */
 data class PreprocessResult(
     val inputBuffer: ByteBuffer,
     val scale: Float,

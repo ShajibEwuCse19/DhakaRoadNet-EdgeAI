@@ -13,6 +13,9 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
+/**
+ * @author Shajib
+ */
 class DhakaRoadNetDetector(
     context: Context,
     private val threadCount: Int = DEFAULT_THREAD_COUNT

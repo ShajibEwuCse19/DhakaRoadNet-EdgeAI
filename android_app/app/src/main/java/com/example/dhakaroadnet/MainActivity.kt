@@ -43,6 +43,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.io.File
 
+/**
+ * @author Shajib
+ */
 class MainActivity : AppCompatActivity(), DetectionContract.View {
     private lateinit var binding: ActivityMainBinding
     private lateinit var presenter: DetectionPresenter
@@ -106,13 +109,15 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     }
 
     private fun bindActions() {
-        binding.selectButton.setOnClickListener { showImageSourceDialog() }
-        binding.detectButton.setOnClickListener { runDetection() }
-        binding.detailsButton.setOnClickListener { showDetailsBottomSheet() }
-        binding.clearButton.setOnClickListener { resetScreen() }
-        binding.videoButton.setOnClickListener { openLiveDetection() }
-        binding.saveResultButton.setOnClickListener { saveDetectionResult() }
-        binding.shareResultButton.setOnClickListener { shareDetectionResult() }
+        binding.apply {
+            selectButton.setOnClickListener { showImageSourceDialog() }
+            detectButton.setOnClickListener { runDetection() }
+            detailsButton.setOnClickListener { showDetailsBottomSheet() }
+            clearButton.setOnClickListener { resetScreen() }
+            videoButton.setOnClickListener { openLiveDetection() }
+            saveResultButton.setOnClickListener { saveDetectionResult() }
+            shareResultButton.setOnClickListener { shareDetectionResult() }
+        }
     }
 
     private fun setupBackPressHandling() {
@@ -151,10 +156,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         val tip = tips[index]
         val popupBinding = PopupFirstRunTipBinding.inflate(layoutInflater)
 
-        popupBinding.tipStepText.text = "Quick guide ${index + 1} of ${tips.size}"
-        popupBinding.tipTitleText.text = tip.title
-        popupBinding.tipBodyText.text = tip.body
-        popupBinding.tipActionButton.text = if (index == tips.lastIndex) "Got it" else "Next"
+        popupBinding.apply {
+            tipStepText.text = "Quick guide ${index + 1} of ${tips.size}"
+            tipTitleText.text = tip.title
+            tipBodyText.text = tip.body
+            tipActionButton.text = if (index == tips.lastIndex) "Got it" else "Next"
+        }
 
         val popupWindow = PopupWindow(
             popupBinding.root,
@@ -233,21 +240,25 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun showSlide(index: Int) {
         if (ProjectSlides.slides.isEmpty()) return
         val slide = ProjectSlides.slides[index]
-        binding.reportImageView.animate().cancel()
-        binding.reportImageView.alpha = SLIDE_START_ALPHA
-        binding.reportImageView.setImageResource(slide.imageResId)
-        binding.reportImageView.animate()
-            .alpha(1f)
-            .setDuration(SLIDE_FADE_MS)
-            .start()
-        binding.reportCaptionText.text = slide.caption
+        binding.apply {
+            reportImageView.animate().cancel()
+            reportImageView.alpha = SLIDE_START_ALPHA
+            reportImageView.setImageResource(slide.imageResId)
+            reportImageView.animate()
+                .alpha(1f)
+                .setDuration(SLIDE_FADE_MS)
+                .start()
+            reportCaptionText.text = slide.caption
+        }
         renderSlideDots(index)
     }
 
     private fun renderSlideDots(activeIndex: Int) {
-        binding.reportDotContainer.removeAllViews()
-        ProjectSlides.slides.forEachIndexed { index, _ ->
-            binding.reportDotContainer.addView(createSlideDot(index, isActive = index == activeIndex))
+        binding.apply {
+            reportDotContainer.removeAllViews()
+            ProjectSlides.slides.forEachIndexed { index, _ ->
+                reportDotContainer.addView(createSlideDot(index, isActive = index == activeIndex))
+            }
         }
     }
 
@@ -309,10 +320,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         val cardBinding = ItemShowcaseCardBinding.inflate(LayoutInflater.from(this))
         val accentColor = ContextCompat.getColor(this, item.accentColorRes)
 
-        cardBinding.showcaseMarkerText.text = item.marker
-        cardBinding.showcaseMarkerText.backgroundTintList = ColorStateList.valueOf(accentColor)
-        cardBinding.showcaseTitleText.text = item.title
-        cardBinding.showcaseBodyText.text = item.body
+        cardBinding.apply {
+            showcaseMarkerText.text = item.marker
+            showcaseMarkerText.backgroundTintList = ColorStateList.valueOf(accentColor)
+            showcaseTitleText.text = item.title
+            showcaseBodyText.text = item.body
+        }
 
         return cardBinding.root.apply {
             strokeColor = accentColor
@@ -326,19 +339,23 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     }
 
     private fun renderDemoSamples() {
-        binding.demoSampleContainer.removeAllViews()
-        ResearchShowcaseContent.demoSamples.forEach { sample ->
-            binding.demoSampleContainer.addView(createDemoSampleCard(sample))
+        binding.apply {
+            demoSampleContainer.removeAllViews()
+            ResearchShowcaseContent.demoSamples.forEach { sample ->
+                demoSampleContainer.addView(createDemoSampleCard(sample))
+            }
         }
     }
 
     private fun createDemoSampleCard(sample: DemoSample): MaterialCardView {
         val cardBinding = ItemDemoSampleCardBinding.inflate(LayoutInflater.from(this))
 
-        cardBinding.sampleImageView.setImageResource(sample.imageResId)
-        cardBinding.sampleTitleText.text = sample.title
-        cardBinding.sampleBodyText.text = sample.body
-        cardBinding.sampleActionButton.setOnClickListener { loadDemoSample(sample) }
+        cardBinding.apply {
+            sampleImageView.setImageResource(sample.imageResId)
+            sampleTitleText.text = sample.title
+            sampleBodyText.text = sample.body
+            sampleActionButton.setOnClickListener { loadDemoSample(sample) }
+        }
 
         return cardBinding.root.apply {
             setOnClickListener { loadDemoSample(sample) }
@@ -380,10 +397,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         val cardBinding = ItemProjectTopicCardBinding.inflate(LayoutInflater.from(this))
         val accentColor = ContextCompat.getColor(this, topic.accentColorRes)
 
-        cardBinding.topicHighlightText.text = topic.highlight
-        cardBinding.topicTitleText.text = topic.title
-        cardBinding.topicSubtitleText.text = topic.subtitle
-        cardBinding.topicHighlightText.setTextColor(accentColor)
+        cardBinding.apply {
+            topicHighlightText.text = topic.highlight
+            topicTitleText.text = topic.title
+            topicSubtitleText.text = topic.subtitle
+            topicHighlightText.setTextColor(accentColor)
+        }
 
         return cardBinding.root.apply {
             strokeColor = accentColor
@@ -486,14 +505,16 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         latestOutput = null
         latestAnnotatedBitmap = null
 
-        binding.inputImageView.setImageBitmap(bitmap)
-        binding.inputPlaceholderText.isVisible = false
-        binding.resultImageView.setImageDrawable(null)
-        binding.resultPlaceholderText.isVisible = true
-        binding.resultBenchmarkText.isVisible = false
-        binding.summaryText.text = summary
-        updateButtonState()
-        binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
+        binding.apply {
+            inputImageView.setImageBitmap(bitmap)
+            inputPlaceholderText.isVisible = false
+            resultImageView.setImageDrawable(null)
+            resultPlaceholderText.isVisible = true
+            resultBenchmarkText.isVisible = false
+            summaryText.text = summary
+            updateButtonState()
+            contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
+        }
     }
 
     private fun decodeBitmap(uri: Uri): Bitmap {
@@ -527,10 +548,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
 
     override fun setLoading(isLoading: Boolean) {
         detectionRunning = isLoading
-        binding.progressBar.isVisible = isLoading
-        if (isLoading) {
-            binding.summaryText.text = "Running detection locally with the TFLite FP16 model..."
-            binding.resultBenchmarkText.isVisible = false
+        binding.apply {
+            progressBar.isVisible = isLoading
+            if (isLoading) {
+                summaryText.text = "Running detection locally with the TFLite FP16 model..."
+                resultBenchmarkText.isVisible = false
+            }
         }
         updateButtonState()
     }
@@ -539,11 +562,13 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         latestOutput = output
         latestAnnotatedBitmap = annotatedBitmap
 
-        binding.resultImageView.setImageBitmap(annotatedBitmap)
-        binding.resultPlaceholderText.isVisible = false
-        binding.summaryText.text = DetectionTextFormatter.buildDetectionSummary(output)
-        binding.resultBenchmarkText.text = ResearchShowcaseContent.buildDetectionBenchmark(output)
-        binding.resultBenchmarkText.isVisible = true
+        binding.apply {
+            resultImageView.setImageBitmap(annotatedBitmap)
+            resultPlaceholderText.isVisible = false
+            summaryText.text = DetectionTextFormatter.buildDetectionSummary(output)
+            resultBenchmarkText.text = ResearchShowcaseContent.buildDetectionBenchmark(output)
+            resultBenchmarkText.isVisible = true
+        }
         updateButtonState()
     }
 
@@ -560,34 +585,38 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         pendingCameraUri = null
         detectionRunning = false
 
-        binding.inputImageView.setImageDrawable(null)
-        binding.resultImageView.setImageDrawable(null)
-        binding.inputPlaceholderText.isVisible = true
-        binding.resultPlaceholderText.isVisible = true
-        binding.resultBenchmarkText.isVisible = false
-        binding.progressBar.isVisible = false
-        binding.summaryText.text = "Ready. Select an image to begin."
-        updateButtonState()
-        binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
+        binding.apply {
+            inputImageView.setImageDrawable(null)
+            resultImageView.setImageDrawable(null)
+            inputPlaceholderText.isVisible = true
+            resultPlaceholderText.isVisible = true
+            resultBenchmarkText.isVisible = false
+            progressBar.isVisible = false
+            summaryText.text = "Ready. Select an image to begin."
+            updateButtonState()
+            contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
+        }
     }
 
     private fun updateButtonState() {
         val hasImage = selectedBitmap != null
         val hasDetectionDetails = latestOutput != null
 
-        binding.homeContent.isVisible = !hasImage
-        binding.detectionContent.isVisible = hasImage
-        binding.detectButton.isVisible = hasImage
-        binding.detailsButton.isVisible = hasImage
-        binding.clearButton.isVisible = hasImage
-        binding.videoButton.isEnabled = !detectionRunning
+        binding.apply {
+            homeContent.isVisible = !hasImage
+            detectionContent.isVisible = hasImage
+            detectButton.isVisible = hasImage
+            detailsButton.isVisible = hasImage
+            clearButton.isVisible = hasImage
+            videoButton.isEnabled = !detectionRunning
 
-        binding.selectButton.isEnabled = !detectionRunning
-        binding.detectButton.isEnabled = !detectionRunning && hasImage
-        binding.detailsButton.isEnabled = !detectionRunning && hasDetectionDetails
-        binding.clearButton.isEnabled = !detectionRunning && hasImage
-        binding.saveResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
-        binding.shareResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
+            selectButton.isEnabled = !detectionRunning
+            detectButton.isEnabled = !detectionRunning && hasImage
+            detailsButton.isEnabled = !detectionRunning && hasDetectionDetails
+            clearButton.isEnabled = !detectionRunning && hasImage
+            saveResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
+            shareResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
+        }
     }
 
     private fun saveDetectionResult() {
@@ -718,10 +747,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
 
     private fun showProjectInfo(info: ProjectInfo) {
         val sheetBinding = BottomSheetProjectInfoBinding.inflate(layoutInflater)
-        sheetBinding.projectInfoTitleText.text = info.title
-        sheetBinding.projectInfoBodyText.text = info.body
-        sheetBinding.projectInfoDivider.isVisible = info.rows.isNotEmpty()
-        sheetBinding.projectInfoListContainer.removeAllViews()
+        sheetBinding.apply {
+            projectInfoTitleText.text = info.title
+            projectInfoBodyText.text = info.body
+            projectInfoDivider.isVisible = info.rows.isNotEmpty()
+            projectInfoListContainer.removeAllViews()
+        }
 
         info.rows.forEach { row ->
             sheetBinding.projectInfoListContainer.addView(createDetailTextView(row))

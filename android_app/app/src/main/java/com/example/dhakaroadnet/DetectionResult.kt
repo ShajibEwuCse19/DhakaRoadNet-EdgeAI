@@ -2,6 +2,9 @@ package com.example.dhakaroadnet
 
 import android.graphics.RectF
 
+/**
+ * @author Shajib
+ */
 data class DetectionResult(
     val classId: Int,
     val label: String,

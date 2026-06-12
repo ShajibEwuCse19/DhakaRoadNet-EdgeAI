@@ -11,6 +11,9 @@ import android.view.View
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * @author Shajib
+ */
 class DetectionOverlayView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

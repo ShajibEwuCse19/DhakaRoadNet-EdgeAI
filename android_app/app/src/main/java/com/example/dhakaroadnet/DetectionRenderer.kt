@@ -8,6 +8,9 @@ import android.graphics.Rect
 import android.graphics.RectF
 import kotlin.math.max
 
+/**
+ * @author Shajib
+ */
 object DetectionRenderer {
     private val palette = intArrayOf(
         Color.rgb(0, 200, 83),

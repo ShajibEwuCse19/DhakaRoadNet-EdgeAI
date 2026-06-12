@@ -31,6 +31,9 @@ import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
+/**
+ * @author Shajib
+ */
 class LiveDetectionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLiveDetectionBinding
     private lateinit var detector: DhakaRoadNetDetector
@@ -76,10 +79,12 @@ class LiveDetectionActivity : AppCompatActivity() {
     }
 
     private fun bindActions() {
-        binding.backButton.setOnClickListener { finish() }
-        binding.pauseButton.setOnClickListener { toggleAnalysisPaused() }
-        binding.decreaseConfidenceButton.setOnClickListener { adjustConfidence(-CONFIDENCE_STEP) }
-        binding.increaseConfidenceButton.setOnClickListener { adjustConfidence(CONFIDENCE_STEP) }
+        binding.apply {
+            backButton.setOnClickListener { finish() }
+            pauseButton.setOnClickListener { toggleAnalysisPaused() }
+            decreaseConfidenceButton.setOnClickListener { adjustConfidence(-CONFIDENCE_STEP) }
+            increaseConfidenceButton.setOnClickListener { adjustConfidence(CONFIDENCE_STEP) }
+        }
     }
 
     private fun setupBackPressHandling() {
@@ -97,8 +102,10 @@ class LiveDetectionActivity : AppCompatActivity() {
         if (hasCameraPermission()) {
             startCamera()
         } else {
-            binding.liveStatusText.text = "Camera permission is off"
-            binding.liveHintText.text = "Allow Camera permission to start live road-object detection."
+            binding.apply {
+                liveStatusText.text = "Camera permission is off"
+                liveHintText.text = "Allow Camera permission to start live road-object detection."
+            }
             if (!hasRequestedCameraPermission) {
                 hasRequestedCameraPermission = true
                 isRequestingCameraPermission = true
@@ -119,9 +126,11 @@ class LiveDetectionActivity : AppCompatActivity() {
     private fun showCameraPermissionDialog() {
         if (permissionDialogShowing || isFinishing || isDestroyed) return
 
-        binding.liveStatusText.text = "Camera permission is off"
-        binding.liveHintText.text = "Open app settings and allow Camera permission to use live detection."
-        permissionDialogShowing = true
+        binding.apply {
+            liveStatusText.text = "Camera permission is off"
+            liveHintText.text = "Open app settings and allow Camera permission to use live detection."
+            permissionDialogShowing = true
+        }
 
         MaterialAlertDialogBuilder(this)
             .setTitle("Camera permission required")
@@ -241,8 +250,10 @@ class LiveDetectionActivity : AppCompatActivity() {
             val fps = calculateFps()
             runOnUiThread {
                 if (!analysisEnabled.get() || isFinishing || isDestroyed) return@runOnUiThread
-                binding.detectionOverlay.setOutput(output)
-                binding.liveStatusText.text = buildLiveStatus(output, fps)
+                binding.apply {
+                    detectionOverlay.setOutput(output)
+                    liveStatusText.text = buildLiveStatus(output, fps)
+                }
             }
         } catch (exception: Exception) {
             runOnUiThread {
@@ -327,13 +338,15 @@ class LiveDetectionActivity : AppCompatActivity() {
     }
 
     private fun toggleAnalysisPaused() {
-        isPaused = !isPaused
-        binding.pauseButton.text = if (isPaused) "Resume" else "Pause"
-        if (isPaused) {
-            binding.liveStatusText.text = "Live detection paused"
-        } else {
-            binding.liveStatusText.text = "Live detection running"
-            lastResultAtMs = 0L
+        binding.apply {
+            isPaused = !isPaused
+            pauseButton.text = if (isPaused) "Resume" else "Pause"
+            if (isPaused) {
+                liveStatusText.text = "Live detection paused"
+            } else {
+                liveStatusText.text = "Live detection running"
+                lastResultAtMs = 0L
+            }
         }
     }
 
@@ -356,8 +369,10 @@ class LiveDetectionActivity : AppCompatActivity() {
             }
         } else {
             stopCameraUseCases()
-            binding.liveStatusText.text = "Camera permission is off"
-            binding.liveHintText.text = "Open app settings and allow Camera permission to use live detection."
+            binding.apply {
+                liveStatusText.text = "Camera permission is off"
+                liveHintText.text = "Open app settings and allow Camera permission to use live detection."
+            }
             if (!isRequestingCameraPermission) {
                 showCameraPermissionDialog()
             }

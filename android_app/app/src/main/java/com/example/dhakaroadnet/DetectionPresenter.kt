@@ -8,6 +8,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.atomic.AtomicBoolean
 
+/**
+ * @author Shajib
+ */
 class DetectionPresenter(
     context: Context,
     private val view: DetectionContract.View

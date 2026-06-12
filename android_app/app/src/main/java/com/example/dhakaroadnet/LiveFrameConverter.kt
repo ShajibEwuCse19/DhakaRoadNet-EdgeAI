@@ -9,6 +9,9 @@ import android.graphics.YuvImage
 import androidx.camera.core.ImageProxy
 import java.io.ByteArrayOutputStream
 
+/**
+ * @author Shajib
+ */
 object LiveFrameConverter {
     fun toBitmap(image: ImageProxy): Bitmap {
         val nv21 = yuv420ToNv21(image)

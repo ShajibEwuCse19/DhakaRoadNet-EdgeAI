@@ -2,6 +2,9 @@ package com.example.dhakaroadnet
 
 import java.util.Locale
 
+/**
+ * @author Shajib
+ */
 object DetectionTextFormatter {
     fun buildDetectionSummary(output: DetectionOutput): String {
         if (output.detections.isEmpty()) {
