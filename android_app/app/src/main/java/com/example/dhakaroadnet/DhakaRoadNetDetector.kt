@@ -13,12 +13,18 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-class DhakaRoadNetDetector(context: Context) : Closeable {
+class DhakaRoadNetDetector(
+    context: Context,
+    private val threadCount: Int = DEFAULT_THREAD_COUNT
+) : Closeable {
     private val appContext = context.applicationContext
     private val labels: List<String> = loadLabels()
+    private val interpreterLock = Any()
+    @Volatile
+    private var closed = false
     private val interpreterDelegate = lazy {
         Interpreter(loadModel(), Interpreter.Options().apply {
-            setNumThreads(THREAD_COUNT)
+            setNumThreads(threadCount)
         })
     }
     private val interpreter: Interpreter
@@ -29,7 +35,10 @@ class DhakaRoadNetDetector(context: Context) : Closeable {
         val output = Array(1) { Array(MAX_DETECTIONS) { FloatArray(OUTPUT_COLUMNS) } }
 
         val startedAt = SystemClock.elapsedRealtimeNanos()
-        interpreter.run(prepared.inputBuffer, output)
+        synchronized(interpreterLock) {
+            check(!closed) { "Detector has already been released." }
+            interpreter.run(prepared.inputBuffer, output)
+        }
         val inferenceTimeMs = (SystemClock.elapsedRealtimeNanos() - startedAt) / 1_000_000
 
         val detections = parseDetections(output[0], prepared, confidenceThreshold)
@@ -107,8 +116,11 @@ class DhakaRoadNetDetector(context: Context) : Closeable {
     }
 
     override fun close() {
-        if (interpreterDelegate.isInitialized()) {
-            interpreterDelegate.value.close()
+        synchronized(interpreterLock) {
+            if (!closed && interpreterDelegate.isInitialized()) {
+                interpreterDelegate.value.close()
+            }
+            closed = true
         }
     }
 
@@ -116,7 +128,9 @@ class DhakaRoadNetDetector(context: Context) : Closeable {
         const val MODEL_FILE = "dhakaroadnet_yolov8n_fp16.tflite"
         const val LABELS_FILE = "labels.txt"
         const val INPUT_SIZE = 640
-        const val THREAD_COUNT = 4
+        const val DEFAULT_THREAD_COUNT = 4
+        const val LIVE_THREAD_COUNT = 1
+        const val THREAD_COUNT = DEFAULT_THREAD_COUNT
         const val DEFAULT_CONFIDENCE = 0.25f
         private const val MAX_DETECTIONS = 300
         private const val OUTPUT_COLUMNS = 6

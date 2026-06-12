@@ -27,6 +27,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
@@ -36,12 +37,17 @@ class LiveDetectionActivity : AppCompatActivity() {
 
     private val cameraExecutor: ExecutorService = Executors.newSingleThreadExecutor()
     private val inferenceRunning = AtomicBoolean(false)
+    private val analysisEnabled = AtomicBoolean(false)
     private var cameraProvider: ProcessCameraProvider? = null
+    private var analysisUseCase: ImageAnalysis? = null
     private var isPaused = false
     private var isRequestingCameraPermission = false
     private var isStartingCamera = false
     private var permissionDialogShowing = false
+    private var hasRequestedCameraPermission = false
+    private var cameraStartRequestId = 0
     private var lastResultAtMs = 0L
+    private var lastAnalyzedAtMs = 0L
     private var confidenceThreshold = DhakaRoadNetDetector.DEFAULT_CONFIDENCE
 
     private val cameraPermissionLauncher = registerForActivityResult(
@@ -60,7 +66,7 @@ class LiveDetectionActivity : AppCompatActivity() {
         binding = ActivityLiveDetectionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        detector = DhakaRoadNetDetector(this)
+        detector = DhakaRoadNetDetector(this, DhakaRoadNetDetector.LIVE_THREAD_COUNT)
         binding.previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
         updateConfidenceText()
 
@@ -93,8 +99,13 @@ class LiveDetectionActivity : AppCompatActivity() {
         } else {
             binding.liveStatusText.text = "Camera permission is off"
             binding.liveHintText.text = "Allow Camera permission to start live road-object detection."
-            isRequestingCameraPermission = true
-            cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            if (!hasRequestedCameraPermission) {
+                hasRequestedCameraPermission = true
+                isRequestingCameraPermission = true
+                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            } else {
+                showCameraPermissionDialog()
+            }
         }
     }
 
@@ -134,11 +145,20 @@ class LiveDetectionActivity : AppCompatActivity() {
     private fun startCamera() {
         if (isStartingCamera) return
         isStartingCamera = true
+        val requestId = ++cameraStartRequestId
         binding.liveStatusText.text = "Starting camera..."
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(
             {
                 try {
+                    if (
+                        requestId != cameraStartRequestId ||
+                        !hasCameraPermission() ||
+                        isFinishing ||
+                        isDestroyed
+                    ) {
+                        return@addListener
+                    }
                     val provider = cameraProviderFuture.get()
                     cameraProvider = provider
                     bindCameraUseCases(provider)
@@ -188,11 +208,21 @@ class LiveDetectionActivity : AppCompatActivity() {
             analysis
         )
 
+        analysisUseCase = analysis
+        analysisEnabled.set(true)
+        lastAnalyzedAtMs = 0L
+        lastResultAtMs = 0L
+
         binding.liveStatusText.text = "Live detection ready"
     }
 
     private fun analyzeFrame(image: ImageProxy) {
-        if (isPaused || !inferenceRunning.compareAndSet(false, true)) {
+        if (
+            !analysisEnabled.get() ||
+            isPaused ||
+            shouldSkipFrame() ||
+            !inferenceRunning.compareAndSet(false, true)
+        ) {
             image.close()
             return
         }
@@ -205,14 +235,18 @@ class LiveDetectionActivity : AppCompatActivity() {
             image.close()
             imageClosed = true
 
+            if (!analysisEnabled.get() || isPaused) return
+
             val output = detector.detect(bitmap, confidenceThreshold)
             val fps = calculateFps()
             runOnUiThread {
+                if (!analysisEnabled.get() || isFinishing || isDestroyed) return@runOnUiThread
                 binding.detectionOverlay.setOutput(output)
                 binding.liveStatusText.text = buildLiveStatus(output, fps)
             }
         } catch (exception: Exception) {
             runOnUiThread {
+                if (!analysisEnabled.get() || isFinishing || isDestroyed) return@runOnUiThread
                 binding.liveStatusText.text = "Live detection problem: ${exception.message}"
             }
         } finally {
@@ -222,6 +256,40 @@ class LiveDetectionActivity : AppCompatActivity() {
             }
             inferenceRunning.set(false)
         }
+    }
+
+    private fun stopCameraUseCases() {
+        analysisEnabled.set(false)
+        analysisUseCase?.clearAnalyzer()
+        analysisUseCase = null
+        cameraProvider?.unbindAll()
+        cameraProvider = null
+        isStartingCamera = false
+        cameraStartRequestId++
+        lastResultAtMs = 0L
+        lastAnalyzedAtMs = 0L
+        if (::binding.isInitialized) {
+            binding.detectionOverlay.setOutput(null)
+        }
+    }
+
+    private fun closeDetectorOnAnalyzerThread() {
+        if (!::detector.isInitialized) return
+
+        try {
+            cameraExecutor.execute { detector.close() }
+        } catch (_: RejectedExecutionException) {
+            detector.close()
+        } finally {
+            cameraExecutor.shutdown()
+        }
+    }
+
+    private fun shouldSkipFrame(): Boolean {
+        val now = SystemClock.elapsedRealtime()
+        if (now - lastAnalyzedAtMs < MIN_ANALYSIS_INTERVAL_MS) return true
+        lastAnalyzedAtMs = now
+        return false
     }
 
     private fun calculateFps(): Float {
@@ -255,7 +323,7 @@ class LiveDetectionActivity : AppCompatActivity() {
     private fun updateConfidenceText() {
         val percent = (confidenceThreshold * 100).roundToInt()
         binding.confidenceText.text = "Confidence $percent%"
-        binding.liveHintText.text = "Back camera - TFLite FP16 - ${DhakaRoadNetDetector.THREAD_COUNT} threads - threshold $percent%"
+        binding.liveHintText.text = "Back camera - TFLite FP16 - ${DhakaRoadNetDetector.LIVE_THREAD_COUNT} thread - threshold $percent%"
     }
 
     private fun toggleAnalysisPaused() {
@@ -287,8 +355,7 @@ class LiveDetectionActivity : AppCompatActivity() {
                 startCamera()
             }
         } else {
-            cameraProvider?.unbindAll()
-            cameraProvider = null
+            stopCameraUseCases()
             binding.liveStatusText.text = "Camera permission is off"
             binding.liveHintText.text = "Open app settings and allow Camera permission to use live detection."
             if (!isRequestingCameraPermission) {
@@ -297,10 +364,14 @@ class LiveDetectionActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        stopCameraUseCases()
+        super.onPause()
+    }
+
     override fun onDestroy() {
-        cameraProvider?.unbindAll()
-        cameraExecutor.shutdownNow()
-        detector.close()
+        stopCameraUseCases()
+        closeDetectorOnAnalyzerThread()
         super.onDestroy()
     }
 
@@ -308,5 +379,6 @@ class LiveDetectionActivity : AppCompatActivity() {
         private const val CONFIDENCE_STEP = 0.05f
         private const val MIN_CONFIDENCE = 0.10f
         private const val MAX_CONFIDENCE = 0.80f
+        private const val MIN_ANALYSIS_INTERVAL_MS = 120L
     }
 }

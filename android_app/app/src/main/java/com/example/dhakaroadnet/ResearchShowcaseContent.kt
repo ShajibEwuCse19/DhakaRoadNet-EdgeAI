@@ -100,9 +100,15 @@ object ResearchShowcaseContent {
         ),
         ShowcaseItem(
             "4T",
-            "CPU threads",
-            "The TFLite interpreter uses ${DhakaRoadNetDetector.THREAD_COUNT} threads for the V1 on-device runtime.",
+            "Image detector",
+            "Still-image detection uses ${DhakaRoadNetDetector.DEFAULT_THREAD_COUNT} TFLite threads for one-shot inference.",
             R.color.dhaka_road_soft
+        ),
+        ShowcaseItem(
+            "1T",
+            "Live detector",
+            "Live camera detection uses ${DhakaRoadNetDetector.LIVE_THREAD_COUNT} TFLite thread to keep repeated video inference stable.",
+            R.color.dhaka_primary
         ),
         ShowcaseItem(
             "Live",
@@ -143,7 +149,7 @@ object ResearchShowcaseContent {
         return buildString {
             appendLine("Runtime evidence")
             appendLine("Model: ${DhakaRoadNetDetector.MODEL_FILE}")
-            appendLine("TFLite: FP16, ${DhakaRoadNetDetector.THREAD_COUNT} threads, ${DhakaRoadNetDetector.INPUT_SIZE} x ${DhakaRoadNetDetector.INPUT_SIZE} input")
+            appendLine("TFLite: FP16, ${DhakaRoadNetDetector.DEFAULT_THREAD_COUNT} threads, ${DhakaRoadNetDetector.INPUT_SIZE} x ${DhakaRoadNetDetector.INPUT_SIZE} input")
             appendLine("This run: ${output.detections.size} detection(s), ${output.inferenceTimeMs} ms, threshold ${formatPercent(output.confidenceThreshold)}")
             append("Offline status: no server call, image analyzed locally on device")
         }
