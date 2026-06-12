@@ -25,6 +25,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.roundToInt
 
 class LiveDetectionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLiveDetectionBinding
@@ -35,6 +36,7 @@ class LiveDetectionActivity : AppCompatActivity() {
     private var cameraProvider: ProcessCameraProvider? = null
     private var isPaused = false
     private var lastResultAtMs = 0L
+    private var confidenceThreshold = DhakaRoadNetDetector.DEFAULT_CONFIDENCE
 
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -53,7 +55,7 @@ class LiveDetectionActivity : AppCompatActivity() {
 
         detector = DhakaRoadNetDetector(this)
         binding.previewView.scaleType = PreviewView.ScaleType.FIT_CENTER
-        binding.confidenceText.text = "Conf ${(DhakaRoadNetDetector.DEFAULT_CONFIDENCE * 100).toInt()}%"
+        updateConfidenceText()
 
         bindActions()
         setupBackPressHandling()
@@ -63,6 +65,8 @@ class LiveDetectionActivity : AppCompatActivity() {
     private fun bindActions() {
         binding.backButton.setOnClickListener { finish() }
         binding.pauseButton.setOnClickListener { toggleAnalysisPaused() }
+        binding.decreaseConfidenceButton.setOnClickListener { adjustConfidence(-CONFIDENCE_STEP) }
+        binding.increaseConfidenceButton.setOnClickListener { adjustConfidence(CONFIDENCE_STEP) }
     }
 
     private fun setupBackPressHandling() {
@@ -173,7 +177,7 @@ class LiveDetectionActivity : AppCompatActivity() {
             image.close()
             imageClosed = true
 
-            val output = detector.detect(bitmap)
+            val output = detector.detect(bitmap, confidenceThreshold)
             val fps = calculateFps()
             runOnUiThread {
                 binding.detectionOverlay.setOutput(output)
@@ -213,6 +217,19 @@ class LiveDetectionActivity : AppCompatActivity() {
         )
     }
 
+    private fun adjustConfidence(delta: Float) {
+        confidenceThreshold = (confidenceThreshold + delta)
+            .coerceIn(MIN_CONFIDENCE, MAX_CONFIDENCE)
+        updateConfidenceText()
+        lastResultAtMs = 0L
+    }
+
+    private fun updateConfidenceText() {
+        val percent = (confidenceThreshold * 100).roundToInt()
+        binding.confidenceText.text = "Confidence $percent%"
+        binding.liveHintText.text = "Back camera - TFLite FP16 - threshold $percent%"
+    }
+
     private fun toggleAnalysisPaused() {
         isPaused = !isPaused
         binding.pauseButton.text = if (isPaused) "Resume" else "Pause"
@@ -238,5 +255,11 @@ class LiveDetectionActivity : AppCompatActivity() {
         cameraExecutor.shutdownNow()
         detector.close()
         super.onDestroy()
+    }
+
+    companion object {
+        private const val CONFIDENCE_STEP = 0.05f
+        private const val MIN_CONFIDENCE = 0.10f
+        private const val MAX_CONFIDENCE = 0.80f
     }
 }

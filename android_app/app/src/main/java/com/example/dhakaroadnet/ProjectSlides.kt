@@ -38,10 +38,6 @@ object ProjectSlides {
         ProjectSlide(
             R.drawable.report_gradio_test,
             "Gradio demo test showing Python-side model deployment."
-        ),
-        ProjectSlide(
-            R.drawable.report_tflite_fp16_prediction,
-            "FP16 TFLite prediction sample for Android export validation."
         )
     )
 }

@@ -1,16 +1,25 @@
 package com.example.dhakaroadnet
 
+import android.Manifest
+import android.content.ContentValues
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.view.LayoutInflater
+import android.view.Gravity
 import android.widget.LinearLayout
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -24,6 +33,7 @@ import com.example.dhakaroadnet.databinding.ActivityMainBinding
 import com.example.dhakaroadnet.databinding.BottomSheetDetectionDetailsBinding
 import com.example.dhakaroadnet.databinding.ItemProjectTopicCardBinding
 import com.example.dhakaroadnet.databinding.BottomSheetProjectInfoBinding
+import com.example.dhakaroadnet.databinding.PopupFirstRunTipBinding
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -35,9 +45,11 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
 
     private var selectedBitmap: Bitmap? = null
     private var latestOutput: DetectionOutput? = null
+    private var latestAnnotatedBitmap: Bitmap? = null
     private var pendingCameraUri: Uri? = null
     private var detectionRunning = false
     private var currentSlideIndex = 0
+    private var isSlideshowPaused = false
     private val slideshowHandler = Handler(Looper.getMainLooper())
     private val slideshowRunnable = object : Runnable {
         override fun run() {
@@ -64,6 +76,16 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         pendingCameraUri = null
     }
 
+    private val savePermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            saveDetectionResult()
+        } else {
+            showError("Storage permission is required to save results on this Android version.")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -75,6 +97,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         setupReportSlideshow()
         setupProjectTopics()
         resetScreen()
+        maybeShowFirstRunTips()
     }
 
     private fun bindActions() {
@@ -83,6 +106,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detailsButton.setOnClickListener { showDetailsBottomSheet() }
         binding.clearButton.setOnClickListener { resetScreen() }
         binding.videoButton.setOnClickListener { openLiveDetection() }
+        binding.saveResultButton.setOnClickListener { saveDetectionResult() }
     }
 
     private fun setupBackPressHandling() {
@@ -105,23 +129,103 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             .show()
     }
 
+    private fun maybeShowFirstRunTips() {
+        val preferences = getSharedPreferences(FIRST_RUN_PREFS, MODE_PRIVATE)
+        if (preferences.getBoolean(KEY_FIRST_RUN_TIPS_SHOWN, false)) return
+
+        binding.root.postDelayed({
+            if (!isFinishing && !isDestroyed) {
+                showFirstRunTip(0)
+            }
+        }, FIRST_RUN_TIP_DELAY_MS)
+    }
+
+    private fun showFirstRunTip(index: Int) {
+        val tips = firstRunTips()
+        val tip = tips[index]
+        val popupBinding = PopupFirstRunTipBinding.inflate(layoutInflater)
+
+        popupBinding.tipStepText.text = "Quick guide ${index + 1} of ${tips.size}"
+        popupBinding.tipTitleText.text = tip.title
+        popupBinding.tipBodyText.text = tip.body
+        popupBinding.tipActionButton.text = if (index == tips.lastIndex) "Got it" else "Next"
+
+        val popupWindow = PopupWindow(
+            popupBinding.root,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            isOutsideTouchable = false
+            elevation = dp(10).toFloat()
+        }
+
+        popupBinding.tipActionButton.setOnClickListener {
+            popupWindow.dismiss()
+            if (index == tips.lastIndex) {
+                getSharedPreferences(FIRST_RUN_PREFS, MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(KEY_FIRST_RUN_TIPS_SHOWN, true)
+                    .apply()
+            } else {
+                binding.root.postDelayed({
+                    if (!isFinishing && !isDestroyed) {
+                        showFirstRunTip(index + 1)
+                    }
+                }, NEXT_TIP_DELAY_MS)
+            }
+        }
+
+        popupWindow.showAtLocation(
+            binding.root,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+            0,
+            dp(104)
+        )
+    }
+
+    private fun firstRunTips(): List<FirstRunTip> {
+        return listOf(
+            FirstRunTip(
+                title = "Select a road image",
+                body = "Use Select to choose a gallery image or take one photo. Then tap Detect to run DhakaRoadNet on-device and review the annotated output."
+            ),
+            FirstRunTip(
+                title = "Try live video detection",
+                body = "Use Video to open the back camera. The app runs the FP16 TFLite model in real time and draws boxes directly over the camera preview."
+            )
+        )
+    }
+
     private fun setupReportSlideshow() {
+        binding.reportImageView.setOnClickListener {
+            moveSlide(1)
+            scheduleNextSlide()
+        }
+        binding.reportImageView.setOnLongClickListener {
+            toggleSlideshowPause()
+            true
+        }
         showSlide(0)
         scheduleNextSlide()
     }
 
     private fun scheduleNextSlide() {
         slideshowHandler.removeCallbacks(slideshowRunnable)
+        if (isSlideshowPaused || ProjectSlides.slides.size <= 1) return
         slideshowHandler.postDelayed(slideshowRunnable, SLIDE_DELAY_MS)
     }
 
     private fun moveSlide(offset: Int) {
         val slideCount = ProjectSlides.slides.size
+        if (slideCount == 0) return
         currentSlideIndex = (currentSlideIndex + offset + slideCount) % slideCount
         showSlide(currentSlideIndex)
     }
 
     private fun showSlide(index: Int) {
+        if (ProjectSlides.slides.isEmpty()) return
         val slide = ProjectSlides.slides[index]
         binding.reportImageView.setImageResource(slide.imageResId)
         binding.reportCaptionText.text = slide.caption
@@ -131,20 +235,29 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun renderSlideDots(activeIndex: Int) {
         binding.reportDotContainer.removeAllViews()
         ProjectSlides.slides.forEachIndexed { index, _ ->
-            binding.reportDotContainer.addView(createSlideDot(isActive = index == activeIndex))
+            binding.reportDotContainer.addView(createSlideDot(index, isActive = index == activeIndex))
         }
     }
 
-    private fun createSlideDot(isActive: Boolean): TextView {
+    private fun createSlideDot(index: Int, isActive: Boolean): TextView {
         return TextView(this).apply {
             text = "•"
             textSize = if (isActive) 26f else 20f
+            minWidth = dp(32)
+            minHeight = dp(32)
+            gravity = Gravity.CENTER
+            contentDescription = "Show slide ${index + 1}"
             setTextColor(
                 ContextCompat.getColor(
                     this@MainActivity,
                     if (isActive) R.color.dhaka_primary else R.color.dhaka_outline
                 )
             )
+            setOnClickListener {
+                currentSlideIndex = index
+                showSlide(currentSlideIndex)
+                scheduleNextSlide()
+            }
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -152,6 +265,18 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
                 marginStart = dp(3)
                 marginEnd = dp(3)
             }
+        }
+    }
+
+    private fun toggleSlideshowPause() {
+        isSlideshowPaused = !isSlideshowPaused
+        binding.slidePauseIndicator.isVisible = isSlideshowPaused
+        if (isSlideshowPaused) {
+            slideshowHandler.removeCallbacks(slideshowRunnable)
+            Toast.makeText(this, "Slideshow paused.", Toast.LENGTH_SHORT).show()
+        } else {
+            scheduleNextSlide()
+            Toast.makeText(this, "Slideshow resumed.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -254,6 +379,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             val bitmap = decodeBitmap(uri)
             selectedBitmap = bitmap
             latestOutput = null
+            latestAnnotatedBitmap = null
 
             binding.inputImageView.setImageBitmap(bitmap)
             binding.inputPlaceholderText.isVisible = false
@@ -301,6 +427,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
 
     override fun showDetectionResult(output: DetectionOutput, annotatedBitmap: Bitmap) {
         latestOutput = output
+        latestAnnotatedBitmap = annotatedBitmap
 
         binding.resultImageView.setImageBitmap(annotatedBitmap)
         binding.resultPlaceholderText.isVisible = false
@@ -317,6 +444,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun resetScreen() {
         selectedBitmap = null
         latestOutput = null
+        latestAnnotatedBitmap = null
         pendingCameraUri = null
         detectionRunning = false
 
@@ -345,6 +473,76 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detectButton.isEnabled = !detectionRunning && hasImage
         binding.detailsButton.isEnabled = !detectionRunning && hasDetectionDetails
         binding.clearButton.isEnabled = !detectionRunning && hasImage
+        binding.saveResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
+    }
+
+    private fun saveDetectionResult() {
+        val bitmap = latestAnnotatedBitmap
+        if (bitmap == null) {
+            showError("Run detection before saving.")
+            return
+        }
+
+        if (needsLegacyStoragePermission() && !hasLegacyStoragePermission()) {
+            savePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            return
+        }
+
+        try {
+            val savedUri = saveBitmapToGallery(bitmap)
+            Toast.makeText(this, "Saved detection result to gallery.", Toast.LENGTH_LONG).show()
+            binding.summaryText.text = "Saved detection result: $savedUri"
+        } catch (exception: Exception) {
+            showError("Could not save result: ${exception.message}")
+        }
+    }
+
+    private fun needsLegacyStoragePermission(): Boolean {
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.P
+    }
+
+    private fun hasLegacyStoragePermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun saveBitmapToGallery(bitmap: Bitmap): Uri {
+        val fileName = "DhakaRoadNet_${System.currentTimeMillis()}.jpg"
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                put(
+                    MediaStore.Images.Media.RELATIVE_PATH,
+                    "${Environment.DIRECTORY_PICTURES}/DhakaRoadNet"
+                )
+                put(MediaStore.Images.Media.IS_PENDING, 1)
+            }
+        }
+
+        val resolver = contentResolver
+        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            ?: error("Could not create gallery image.")
+
+        try {
+            resolver.openOutputStream(uri)?.use { output ->
+                if (!bitmap.compress(Bitmap.CompressFormat.JPEG, SAVE_IMAGE_QUALITY, output)) {
+                    error("Image compression failed.")
+                }
+            } ?: error("Could not open gallery image.")
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                values.clear()
+                values.put(MediaStore.Images.Media.IS_PENDING, 0)
+                resolver.update(uri, values, null, null)
+            }
+            return uri
+        } catch (exception: Exception) {
+            resolver.delete(uri, null, null)
+            throw exception
+        }
     }
 
     private fun showDetailsBottomSheet() {
@@ -405,5 +603,15 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     companion object {
         private const val SLIDE_DELAY_MS = 4_500L
         private const val TOPIC_COLUMNS = 2
+        private const val FIRST_RUN_PREFS = "first_run_tips"
+        private const val KEY_FIRST_RUN_TIPS_SHOWN = "tips_shown"
+        private const val FIRST_RUN_TIP_DELAY_MS = 700L
+        private const val NEXT_TIP_DELAY_MS = 180L
+        private const val SAVE_IMAGE_QUALITY = 95
     }
+
+    private data class FirstRunTip(
+        val title: String,
+        val body: String
+    )
 }
