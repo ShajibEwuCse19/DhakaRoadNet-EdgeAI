@@ -435,10 +435,11 @@ object ProjectInfoContent {
         body = "This app is a native Kotlin/XML Android implementation for offline DhakaRoadNet image detection.",
         rows = listOf(
             "Architecture\nActivity, Presenter, Detector, Preprocessor, Renderer, project-info catalog, and reusable UI helpers.",
-            "Current flow\nSelect image, run detection, compare input and output, then open annotation details.",
+            "Image flow\nSelect or load a built-in sample, run detection, compare input and output, then open annotation details.",
+            "Live flow\nVideo opens CameraX back-camera detection with FP16 boxes drawn over the preview.",
             "Model file\ndhakaroadnet_yolov8n_fp16.tflite.",
             "Labels\nlabels.txt packaged with the model.",
-            "Next step\nReal-time video detection can be added after the image workflow is stable."
+            "Demo utilities\nSave or share an annotated detection result for portfolio review."
         )
     )
 

@@ -1,10 +1,13 @@
 package com.example.dhakaroadnet
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
+import android.provider.Settings
 import android.util.Size
 import android.view.Surface
 import androidx.activity.OnBackPressedCallback
@@ -35,12 +38,16 @@ class LiveDetectionActivity : AppCompatActivity() {
     private val inferenceRunning = AtomicBoolean(false)
     private var cameraProvider: ProcessCameraProvider? = null
     private var isPaused = false
+    private var isRequestingCameraPermission = false
+    private var isStartingCamera = false
+    private var permissionDialogShowing = false
     private var lastResultAtMs = 0L
     private var confidenceThreshold = DhakaRoadNetDetector.DEFAULT_CONFIDENCE
 
     private val cameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
+        isRequestingCameraPermission = false
         if (granted) {
             startCamera()
         } else {
@@ -84,6 +91,9 @@ class LiveDetectionActivity : AppCompatActivity() {
         if (hasCameraPermission()) {
             startCamera()
         } else {
+            binding.liveStatusText.text = "Camera permission is off"
+            binding.liveHintText.text = "Allow Camera permission to start live road-object detection."
+            isRequestingCameraPermission = true
             cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
     }
@@ -96,18 +106,34 @@ class LiveDetectionActivity : AppCompatActivity() {
     }
 
     private fun showCameraPermissionDialog() {
-        binding.liveStatusText.text = "Camera permission is required for live detection."
+        if (permissionDialogShowing || isFinishing || isDestroyed) return
+
+        binding.liveStatusText.text = "Camera permission is off"
+        binding.liveHintText.text = "Open app settings and allow Camera permission to use live detection."
+        permissionDialogShowing = true
+
         MaterialAlertDialogBuilder(this)
             .setTitle("Camera permission required")
-            .setMessage("Live road-object detection needs camera access to analyze frames on-device.")
+            .setMessage("Live detection cannot start because Android has blocked camera access for this app. Open Settings, choose Permissions, and allow Camera.")
             .setNegativeButton("Back") { _, _ -> finish() }
-            .setPositiveButton("Try again") { _, _ ->
-                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            .setNeutralButton("Try again") { _, _ -> requestCameraIfNeeded() }
+            .setPositiveButton("Open Settings") { _, _ ->
+                openAppSettings()
             }
             .show()
+            .setOnDismissListener { permissionDialogShowing = false }
+    }
+
+    private fun openAppSettings() {
+        val settingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, null)
+        }
+        startActivity(settingsIntent)
     }
 
     private fun startCamera() {
+        if (isStartingCamera) return
+        isStartingCamera = true
         binding.liveStatusText.text = "Starting camera..."
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(
@@ -118,6 +144,8 @@ class LiveDetectionActivity : AppCompatActivity() {
                     bindCameraUseCases(provider)
                 } catch (exception: Exception) {
                     showCameraError(exception)
+                } finally {
+                    isStartingCamera = false
                 }
             },
             ContextCompat.getMainExecutor(this)
@@ -227,7 +255,7 @@ class LiveDetectionActivity : AppCompatActivity() {
     private fun updateConfidenceText() {
         val percent = (confidenceThreshold * 100).roundToInt()
         binding.confidenceText.text = "Confidence $percent%"
-        binding.liveHintText.text = "Back camera - TFLite FP16 - threshold $percent%"
+        binding.liveHintText.text = "Back camera - TFLite FP16 - ${DhakaRoadNetDetector.THREAD_COUNT} threads - threshold $percent%"
     }
 
     private fun toggleAnalysisPaused() {
@@ -248,6 +276,25 @@ class LiveDetectionActivity : AppCompatActivity() {
             .setMessage(exception.message ?: "The camera could not be started on this device.")
             .setPositiveButton("Back") { _, _ -> finish() }
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!::binding.isInitialized) return
+
+        if (hasCameraPermission()) {
+            if (cameraProvider == null && !isStartingCamera) {
+                startCamera()
+            }
+        } else {
+            cameraProvider?.unbindAll()
+            cameraProvider = null
+            binding.liveStatusText.text = "Camera permission is off"
+            binding.liveHintText.text = "Open app settings and allow Camera permission to use live detection."
+            if (!isRequestingCameraPermission) {
+                showCameraPermissionDialog()
+            }
+        }
     }
 
     override fun onDestroy() {

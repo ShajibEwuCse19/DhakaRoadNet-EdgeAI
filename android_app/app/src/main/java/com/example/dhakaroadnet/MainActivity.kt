@@ -2,6 +2,7 @@ package com.example.dhakaroadnet
 
 import android.Manifest
 import android.content.ContentValues
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -32,6 +34,8 @@ import androidx.core.view.isVisible
 import com.example.dhakaroadnet.databinding.ActivityMainBinding
 import com.example.dhakaroadnet.databinding.BottomSheetDetectionDetailsBinding
 import com.example.dhakaroadnet.databinding.ItemProjectTopicCardBinding
+import com.example.dhakaroadnet.databinding.ItemDemoSampleCardBinding
+import com.example.dhakaroadnet.databinding.ItemShowcaseCardBinding
 import com.example.dhakaroadnet.databinding.BottomSheetProjectInfoBinding
 import com.example.dhakaroadnet.databinding.PopupFirstRunTipBinding
 import com.google.android.material.card.MaterialCardView
@@ -95,6 +99,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         bindActions()
         setupBackPressHandling()
         setupReportSlideshow()
+        setupResearchShowcase()
         setupProjectTopics()
         resetScreen()
         maybeShowFirstRunTips()
@@ -107,6 +112,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.clearButton.setOnClickListener { resetScreen() }
         binding.videoButton.setOnClickListener { openLiveDetection() }
         binding.saveResultButton.setOnClickListener { saveDetectionResult() }
+        binding.shareResultButton.setOnClickListener { shareDetectionResult() }
     }
 
     private fun setupBackPressHandling() {
@@ -189,7 +195,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         return listOf(
             FirstRunTip(
                 title = "Select a road image",
-                body = "Use Select to choose a gallery image or take one photo. Then tap Detect to run DhakaRoadNet on-device and review the annotated output."
+                body = "Use Select to choose a gallery image, take one photo, or load a bundled Dhaka sample. Then tap Detect to run DhakaRoadNet on-device."
             ),
             FirstRunTip(
                 title = "Try live video detection",
@@ -227,7 +233,13 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun showSlide(index: Int) {
         if (ProjectSlides.slides.isEmpty()) return
         val slide = ProjectSlides.slides[index]
+        binding.reportImageView.animate().cancel()
+        binding.reportImageView.alpha = SLIDE_START_ALPHA
         binding.reportImageView.setImageResource(slide.imageResId)
+        binding.reportImageView.animate()
+            .alpha(1f)
+            .setDuration(SLIDE_FADE_MS)
+            .start()
         binding.reportCaptionText.text = slide.caption
         renderSlideDots(index)
     }
@@ -242,9 +254,8 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun createSlideDot(index: Int, isActive: Boolean): TextView {
         return TextView(this).apply {
             text = "•"
-            textSize = if (isActive) 26f else 20f
-            minWidth = dp(32)
-            minHeight = dp(32)
+            textSize = 24f
+            alpha = if (isActive) 1f else 0.45f
             gravity = Gravity.CENTER
             contentDescription = "Show slide ${index + 1}"
             setTextColor(
@@ -259,8 +270,8 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
                 scheduleNextSlide()
             }
             layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                dp(32),
+                dp(32)
             ).apply {
                 marginStart = dp(3)
                 marginEnd = dp(3)
@@ -277,6 +288,66 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         } else {
             scheduleNextSlide()
             Toast.makeText(this, "Slideshow resumed.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupResearchShowcase() {
+        renderShowcaseItems(binding.pipelineContainer, ResearchShowcaseContent.pipelineStages)
+        renderDemoSamples()
+        renderShowcaseItems(binding.modelBenchmarkContainer, ResearchShowcaseContent.benchmarkFacts)
+        renderShowcaseItems(binding.researchLimitContainer, ResearchShowcaseContent.researchLimitations)
+    }
+
+    private fun renderShowcaseItems(container: LinearLayout, items: List<ShowcaseItem>) {
+        container.removeAllViews()
+        items.forEach { item ->
+            container.addView(createShowcaseCard(item))
+        }
+    }
+
+    private fun createShowcaseCard(item: ShowcaseItem): MaterialCardView {
+        val cardBinding = ItemShowcaseCardBinding.inflate(LayoutInflater.from(this))
+        val accentColor = ContextCompat.getColor(this, item.accentColorRes)
+
+        cardBinding.showcaseMarkerText.text = item.marker
+        cardBinding.showcaseMarkerText.backgroundTintList = ColorStateList.valueOf(accentColor)
+        cardBinding.showcaseTitleText.text = item.title
+        cardBinding.showcaseBodyText.text = item.body
+
+        return cardBinding.root.apply {
+            strokeColor = accentColor
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(10)
+            }
+        }
+    }
+
+    private fun renderDemoSamples() {
+        binding.demoSampleContainer.removeAllViews()
+        ResearchShowcaseContent.demoSamples.forEach { sample ->
+            binding.demoSampleContainer.addView(createDemoSampleCard(sample))
+        }
+    }
+
+    private fun createDemoSampleCard(sample: DemoSample): MaterialCardView {
+        val cardBinding = ItemDemoSampleCardBinding.inflate(LayoutInflater.from(this))
+
+        cardBinding.sampleImageView.setImageResource(sample.imageResId)
+        cardBinding.sampleTitleText.text = sample.title
+        cardBinding.sampleBodyText.text = sample.body
+        cardBinding.sampleActionButton.setOnClickListener { loadDemoSample(sample) }
+
+        return cardBinding.root.apply {
+            setOnClickListener { loadDemoSample(sample) }
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                topMargin = dp(10)
+            }
         }
     }
 
@@ -334,12 +405,24 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun showImageSourceDialog() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Select road image")
-            .setItems(arrayOf("Upload from gallery", "Take photo with camera")) { _, which ->
-                if (which == 0) {
-                    openGallery()
-                } else {
-                    openCamera()
+            .setItems(arrayOf("Upload from gallery", "Take photo with camera", "Use bundled demo sample")) { _, which ->
+                when (which) {
+                    0 -> openGallery()
+                    1 -> openCamera()
+                    else -> showDemoSampleDialog()
                 }
+            }
+            .show()
+    }
+
+    private fun showDemoSampleDialog() {
+        val samples = ResearchShowcaseContent.demoSamples
+        val sampleTitles = samples.map { it.title }.toTypedArray()
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Try built-in sample")
+            .setItems(sampleTitles) { _, which ->
+                loadDemoSample(samples[which])
             }
             .show()
     }
@@ -377,20 +460,40 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
     private fun loadSelectedImage(uri: Uri) {
         try {
             val bitmap = decodeBitmap(uri)
-            selectedBitmap = bitmap
-            latestOutput = null
-            latestAnnotatedBitmap = null
-
-            binding.inputImageView.setImageBitmap(bitmap)
-            binding.inputPlaceholderText.isVisible = false
-            binding.resultImageView.setImageDrawable(null)
-            binding.resultPlaceholderText.isVisible = true
-            binding.summaryText.text = "Image selected. Tap Detect to run DhakaRoadNet on-device."
-            updateButtonState()
-            binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
+            loadBitmapIntoWorkspace(
+                bitmap,
+                "Image selected. Tap Detect to run DhakaRoadNet on-device."
+            )
         } catch (exception: Exception) {
             showError("Could not read image: ${exception.message}")
         }
+    }
+
+    private fun loadDemoSample(sample: DemoSample) {
+        try {
+            val bitmap = decodeSampleBitmap(sample)
+            loadBitmapIntoWorkspace(
+                bitmap,
+                "Loaded sample: ${sample.title}. Tap Detect to run the packaged FP16 model locally."
+            )
+        } catch (exception: Exception) {
+            showError("Could not load sample: ${exception.message}")
+        }
+    }
+
+    private fun loadBitmapIntoWorkspace(bitmap: Bitmap, summary: String) {
+        selectedBitmap = bitmap
+        latestOutput = null
+        latestAnnotatedBitmap = null
+
+        binding.inputImageView.setImageBitmap(bitmap)
+        binding.inputPlaceholderText.isVisible = false
+        binding.resultImageView.setImageDrawable(null)
+        binding.resultPlaceholderText.isVisible = true
+        binding.resultBenchmarkText.isVisible = false
+        binding.summaryText.text = summary
+        updateButtonState()
+        binding.contentScroll.post { binding.contentScroll.smoothScrollTo(0, 0) }
     }
 
     private fun decodeBitmap(uri: Uri): Bitmap {
@@ -404,6 +507,12 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
                 BitmapFactory.decodeStream(stream)
             } ?: error("Image file is empty.")
         }
+        return decoded.copy(Bitmap.Config.ARGB_8888, false) ?: decoded
+    }
+
+    private fun decodeSampleBitmap(sample: DemoSample): Bitmap {
+        val decoded = BitmapFactory.decodeResource(resources, sample.imageResId)
+            ?: error("Sample image is missing.")
         return decoded.copy(Bitmap.Config.ARGB_8888, false) ?: decoded
     }
 
@@ -421,6 +530,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.progressBar.isVisible = isLoading
         if (isLoading) {
             binding.summaryText.text = "Running detection locally with the TFLite FP16 model..."
+            binding.resultBenchmarkText.isVisible = false
         }
         updateButtonState()
     }
@@ -432,6 +542,8 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.resultImageView.setImageBitmap(annotatedBitmap)
         binding.resultPlaceholderText.isVisible = false
         binding.summaryText.text = DetectionTextFormatter.buildDetectionSummary(output)
+        binding.resultBenchmarkText.text = ResearchShowcaseContent.buildDetectionBenchmark(output)
+        binding.resultBenchmarkText.isVisible = true
         updateButtonState()
     }
 
@@ -452,6 +564,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.resultImageView.setImageDrawable(null)
         binding.inputPlaceholderText.isVisible = true
         binding.resultPlaceholderText.isVisible = true
+        binding.resultBenchmarkText.isVisible = false
         binding.progressBar.isVisible = false
         binding.summaryText.text = "Ready. Select an image to begin."
         updateButtonState()
@@ -474,6 +587,7 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         binding.detailsButton.isEnabled = !detectionRunning && hasDetectionDetails
         binding.clearButton.isEnabled = !detectionRunning && hasImage
         binding.saveResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
+        binding.shareResultButton.isEnabled = !detectionRunning && latestAnnotatedBitmap != null
     }
 
     private fun saveDetectionResult() {
@@ -494,6 +608,26 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             binding.summaryText.text = "Saved detection result: $savedUri"
         } catch (exception: Exception) {
             showError("Could not save result: ${exception.message}")
+        }
+    }
+
+    private fun shareDetectionResult() {
+        val bitmap = latestAnnotatedBitmap
+        if (bitmap == null) {
+            showError("Run detection before sharing.")
+            return
+        }
+
+        try {
+            val shareUri = createSharedDetectionResult(bitmap)
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/jpeg"
+                putExtra(Intent.EXTRA_STREAM, shareUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share detection result"))
+        } catch (exception: Exception) {
+            showError("Could not share result: ${exception.message}")
         }
     }
 
@@ -543,6 +677,23 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
             resolver.delete(uri, null, null)
             throw exception
         }
+    }
+
+    private fun createSharedDetectionResult(bitmap: Bitmap): Uri {
+        val shareDirectory = File(cacheDir, "shared_results").apply { mkdirs() }
+        val shareFile = File(shareDirectory, "dhakaroadnet_detection_result.jpg")
+
+        shareFile.outputStream().use { output ->
+            if (!bitmap.compress(Bitmap.CompressFormat.JPEG, SAVE_IMAGE_QUALITY, output)) {
+                error("Image compression failed.")
+            }
+        }
+
+        return FileProvider.getUriForFile(
+            this,
+            "${packageName}.fileprovider",
+            shareFile
+        )
     }
 
     private fun showDetailsBottomSheet() {
@@ -608,6 +759,8 @@ class MainActivity : AppCompatActivity(), DetectionContract.View {
         private const val FIRST_RUN_TIP_DELAY_MS = 700L
         private const val NEXT_TIP_DELAY_MS = 180L
         private const val SAVE_IMAGE_QUALITY = 95
+        private const val SLIDE_FADE_MS = 220L
+        private const val SLIDE_START_ALPHA = 0.25f
     }
 
     private data class FirstRunTip(

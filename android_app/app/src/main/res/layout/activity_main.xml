@@ -15,6 +15,7 @@
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:fillViewport="false"
+        android:smoothScrollbar="true"
         android:paddingBottom="18dp"
         app:layout_constraintBottom_toTopOf="@id/actionBarCard"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +105,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/reportSlideshowCard"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="352dp"
                     android:layout_marginTop="18dp"
                     app:cardBackgroundColor="@color/dhaka_surface"
                     app:cardCornerRadius="8dp"
@@ -114,7 +115,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:padding="12dp">
 
@@ -147,9 +148,11 @@
                         <TextView
                             android:id="@+id/reportCaptionText"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="44dp"
                             android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
                             android:lineSpacingExtra="2dp"
+                            android:maxLines="2"
                             android:textColor="@color/dhaka_text_primary"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -157,8 +160,8 @@
                         <LinearLayout
                             android:id="@+id/reportDotContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_height="32dp"
+                            android:layout_marginTop="2dp"
                             android:gravity="center"
                             android:orientation="horizontal" />
                     </LinearLayout>
@@ -181,6 +184,88 @@
                     android:text="DhakaRoadNet is a custom Edge AI project built from real Dhaka road video and image collection, handcrafted dataset preparation, YOLOv8n training on a personal GPU device, and Android TensorFlow Lite deployment. It is not a generic benchmark-data demo; it is a local road-scene dataset and app pipeline for Bangladeshi urban traffic."
                     android:textColor="@color/dhaka_text_secondary"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Research Pipeline"
+                    android:textColor="@color/dhaka_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="A reviewer can follow the complete ML path inside the app: custom data, verification, training, evaluation, export, and phone-side inference."
+                    android:textColor="@color/dhaka_text_secondary"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/pipelineContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Try a Built-in Sample"
+                    android:textColor="@color/dhaka_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Use these bundled Dhaka road frames when gallery access is inconvenient during a quick project demo."
+                    android:textColor="@color/dhaka_text_secondary"
+                    android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/demoSampleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="On-device Benchmark Evidence"
+                    android:textColor="@color/dhaka_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/modelBenchmarkContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Research Limitations"
+                    android:textColor="@color/dhaka_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/researchLimitContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -321,14 +406,31 @@
                                 android:textStyle="bold" />
 
                             <com.google.android.material.button.MaterialButton
+                                android:id="@+id/shareResultButton"
+                                style="@style/Widget.Material3.Button.OutlinedButton"
+                                android:layout_width="42dp"
+                                android:layout_height="42dp"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Share detection result"
+                                android:enabled="false"
+                                android:minWidth="0dp"
+                                android:padding="0dp"
+                                app:icon="@drawable/ic_share"
+                                app:iconGravity="textStart"
+                                app:iconPadding="0dp"
+                                app:iconSize="20dp"
+                                app:iconTint="@color/dhaka_primary"
+                                app:strokeColor="@color/dhaka_primary" />
+
+                            <com.google.android.material.button.MaterialButton
                                 android:id="@+id/saveResultButton"
                                 style="@style/Widget.Material3.Button.OutlinedButton"
                                 android:layout_width="42dp"
                                 android:layout_height="42dp"
+                                android:contentDescription="Save detection result"
                                 android:enabled="false"
                                 android:minWidth="0dp"
                                 android:padding="0dp"
-                                android:contentDescription="Save detection result"
                                 app:icon="@drawable/ic_save"
                                 app:iconGravity="textStart"
                                 app:iconPadding="0dp"
@@ -377,6 +479,17 @@
                     android:text="Ready. Select an image to begin."
                     android:textColor="@color/dhaka_text_secondary"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/resultBenchmarkText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_chip"
+                    android:lineSpacingExtra="2dp"
+                    android:textColor="@color/dhaka_text_secondary"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

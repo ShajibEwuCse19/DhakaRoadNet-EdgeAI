@@ -5,7 +5,7 @@ import java.util.Locale
 object DetectionTextFormatter {
     fun buildDetectionSummary(output: DetectionOutput): String {
         if (output.detections.isEmpty()) {
-            return "No objects were detected above ${formatPercent(output.confidenceThreshold)} confidence. Inference: ${output.inferenceTimeMs} ms."
+            return "Offline FP16 result: no objects above ${formatPercent(output.confidenceThreshold)} confidence. Inference: ${output.inferenceTimeMs} ms."
         }
 
         val objectCounts = output.detections
@@ -14,8 +14,11 @@ object DetectionTextFormatter {
             .entries
             .sortedByDescending { it.value }
             .joinToString(", ") { "${it.key} x${it.value}" }
+        val topDetections = output.detections
+            .take(3)
+            .joinToString(", ") { "${readableLabel(it.label)} ${formatPercent(it.confidence)}" }
 
-        return "${output.detections.size} object(s) detected: $objectCounts. Inference: ${output.inferenceTimeMs} ms. Tap Info for annotation data."
+        return "Offline FP16 result: ${output.detections.size} object(s), ${output.inferenceTimeMs} ms, threshold ${formatPercent(output.confidenceThreshold)}.\nCounts: $objectCounts.\nTop: $topDetections.\nTap Info for annotation data."
     }
 
     fun buildModelInfo(output: DetectionOutput): String {

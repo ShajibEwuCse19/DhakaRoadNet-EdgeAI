@@ -3,4 +3,7 @@
     <cache-path
         name="camera_images"
         path="camera_images/" />
+    <cache-path
+        name="shared_results"
+        path="shared_results/" />
 </paths>

@@ -18,7 +18,7 @@ class DhakaRoadNetDetector(context: Context) : Closeable {
     private val labels: List<String> = loadLabels()
     private val interpreterDelegate = lazy {
         Interpreter(loadModel(), Interpreter.Options().apply {
-            setNumThreads(4)
+            setNumThreads(THREAD_COUNT)
         })
     }
     private val interpreter: Interpreter
@@ -116,6 +116,7 @@ class DhakaRoadNetDetector(context: Context) : Closeable {
         const val MODEL_FILE = "dhakaroadnet_yolov8n_fp16.tflite"
         const val LABELS_FILE = "labels.txt"
         const val INPUT_SIZE = 640
+        const val THREAD_COUNT = 4
         const val DEFAULT_CONFIDENCE = 0.25f
         private const val MAX_DETECTIONS = 300
         private const val OUTPUT_COLUMNS = 6
